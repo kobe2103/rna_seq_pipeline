@@ -1,0 +1,16 @@
+# for cutadapt
+MINIMUM_OVERLAP = '3'
+MAXIMUM_ERROR_RATE = '0.1'
+MINIMUM_LENGTH = '50'
+
+# for Star
+MAPPING_OUT_SUFFIX = 'Aligned.sortedByCoord.out.bam'  # given by STAR
+OUT_SAM_TYPE = 'BAM SortedByCoordinate'
+LENGTH_OF_DONOR_SEQUENCE = '100'
+SAM_ATTIRBUTE = 'Standard'
+
+# for HTSeq
+STANDARD_SPECIFIC_ASSAY = 'yes'
+SKIP_LOWER_QUALITY_READ = '10'
+MODE_TO_HANDLE_READ_OVERLAPPING = 'union'
+
