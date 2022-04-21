@@ -39,6 +39,6 @@ class TestFastQC(TestCase):
 
     def test_main(self):
         FastQC(self.settings).main(
-            trimmed_fq1=f'{self.indir}/trimmed_1.fq',
-            trimmed_fq2=f'{self.indir}/trimmed_2.fq'
+            fq1=f'{self.indir}/trimmed_1.fq',
+            fq2=f'{self.indir}/trimmed_2.fq'
         )

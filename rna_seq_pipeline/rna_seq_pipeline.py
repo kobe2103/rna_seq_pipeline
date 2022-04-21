@@ -1,4 +1,4 @@
-from .template import Settings, Processor
+from .template import Processor
 from .trimming import Cutadapt, FastQC
 from .mapping import Star
 from .counting import HTSeq
@@ -17,9 +17,6 @@ class RNASeqPipeline(Processor):
     trimmed_fq2: str
     sorted_bam: str
     count_csv: str
-
-    def __init__(self, settings: Settings):
-        super().__init__(settings=settings)
 
     def main(self,
              ref_fa: str,
@@ -50,8 +47,8 @@ class RNASeqPipeline(Processor):
 
     def fastqc(self):
         FastQC(self.settings).main(
-            trimmed_fq1=self.trimmed_fq1,
-            trimmed_fq2=self.trimmed_fq2)
+            fq1=self.trimmed_fq1,
+            fq2=self.trimmed_fq2)
 
     def mapping(self):
         self.sorted_bam = Star(self.settings).main(

@@ -1,5 +1,5 @@
 import os
-from .template import Processor, Settings
+from .template import Processor
 from .constant import *
 
 
@@ -13,9 +13,6 @@ class Bowtie2(Processor):
     sam: str
     bam: str
     sorted_bam: str
-
-    def __init__(self, settings: Settings):
-        super().__init__(settings=settings)
 
     def main(
             self,
@@ -70,9 +67,6 @@ class Star(Processor):
 
     genome_dir: str
     mapping_out_prefix: str
-
-    def __init__(self, settings: Settings):
-        super().__init__(settings=settings)
 
     def main(
             self,

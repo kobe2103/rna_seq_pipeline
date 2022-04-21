@@ -1,4 +1,4 @@
-from .template import Settings, Processor
+from .template import Processor
 from .constant import *
 from typing import Tuple
 
@@ -11,9 +11,6 @@ class Cutadapt(Processor):
     adapter_rev: str
     trimmed_fq1: str
     trimmed_fq2: str
-
-    def __init__(self, settings: Settings):
-        super().__init__(settings=settings)
 
     def main(self,
              fq1: str,
@@ -51,24 +48,21 @@ class Cutadapt(Processor):
 
 class FastQC(Processor):
 
-    trimmed_fq1: str
-    trimmed_fq2: str
-
-    def __init__(self, settings: Settings):
-        super().__init__(settings=settings)
+    fq1: str
+    fq2: str
 
     def main(self,
-             trimmed_fq1: str,
-             trimmed_fq2: str):
+             fq1: str,
+             fq2: str):
 
-        self.trimmed_fq1 = trimmed_fq1
-        self.trimmed_fq2 = trimmed_fq2
+        self.fq1 = fq1
+        self.fq2 = fq2
 
         self.fastqc()
 
     def fastqc(self):
         cmd = f'fastqc \
                 --outdir {self.outdir} \
-                {self.trimmed_fq1} {self.trimmed_fq2} \
+                {self.fq1} {self.fq2} \
                 --threads {self.threads}'
         self.call(cmd)

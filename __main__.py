@@ -6,7 +6,7 @@ __VERSION__ = '1.0.0-beta'
 
 
 PROG = 'python rna_seq_pipeline'
-DESCRIPTION = f'Custom-built RNA-seq pipeline (version {__VERSION__}) by Chang-Yi Chen (cychen.de10@nycu.edu.tw)'
+DESCRIPTION = f'Custom-built RNA-seq pipeline (version {__VERSION__}) by Chang-Yi Chen (cychen.de10@nycu.edu.tw) and Yu-Cheng Lin (ylin@nycu.edu.tw)'
 REQUIRED = [
     {
         'keys': ['-r', '--ref-fa'],

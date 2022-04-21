@@ -1,4 +1,4 @@
-from .template import Settings, Processor
+from .template import Processor
 from .constant import *
 
 
@@ -7,9 +7,6 @@ class HTSeq(Processor):
     sorted_bam: str
     gtf: str
     out_counts: str
-
-    def __init__(self, settings: Settings):
-        super().__init__(settings=settings)
 
     def main(self,
              sorted_bam: str,
