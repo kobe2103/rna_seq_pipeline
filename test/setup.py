@@ -1,7 +1,7 @@
 import os
 import shutil
 import unittest
-from rna_seq_pipeline.mapping import Settings
+from rna_seq_pipeline.template import Settings
 
 
 class TestCase(unittest.TestCase):
@@ -18,7 +18,7 @@ class TestCase(unittest.TestCase):
         self.settings = Settings(
             workdir=self.workdir,
             outdir=self.outdir,
-            threads=8,
+            threads=4,
             debug=True)
 
     def tear_down(self):

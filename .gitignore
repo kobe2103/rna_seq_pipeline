@@ -9,9 +9,8 @@ __pycache__/
 .DS_Store
 
 # Test / data
-test/test_trimming/
-test/test_mapping/
-test/test_counting/
-test/test_rna_seq_pipeline/
+test/*test*/
+test/*workdir*/
+test/*outdir*/
 
 todo

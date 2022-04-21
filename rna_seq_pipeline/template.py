@@ -1,4 +1,5 @@
 import subprocess
+from datetime import datetime
 
 
 class Settings:
@@ -21,6 +22,30 @@ class Settings:
         self.debug = debug
 
 
+class Logger:
+
+    INFO: str = 'INFO'
+    DEBUG: str = 'DEBUG'
+
+    name: str
+    level: str
+
+    def __init__(self, name: str, level: str):
+        self.name = name
+        assert level in [self.INFO, self.DEBUG]
+        self.level = level
+
+    def info(self, msg: str):
+        print(f'{self.name}\tINFO\t{datetime.now()}', flush=True)
+        print(msg + '\n', flush=True)
+
+    def debug(self, msg: str):
+        if self.level == self.INFO:
+            return
+        print(f'{self.name}\tDEBUG\t{datetime.now()}', flush=True)
+        print(msg + '\n', flush=True)
+
+
 class Processor:
 
     workdir: str
@@ -36,6 +61,11 @@ class Processor:
         self.debug = settings.debug
         self.settings = settings
 
+        self.logger = Logger(
+            name=self.__class__.__name__,
+            level=Logger.DEBUG if self.debug else Logger.INFO
+        )
+
     def call(self, cmd: str):
-        print(f'CMD: {cmd}', flush=True)
+        self.logger.info(cmd)
         subprocess.check_call(cmd, shell=True)
