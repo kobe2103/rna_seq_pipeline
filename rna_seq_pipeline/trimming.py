@@ -1,5 +1,5 @@
 from .template import Settings, Processor
-from .CONSTANT import *
+from .constant import *
 from typing import Tuple
 
 

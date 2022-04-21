@@ -1,6 +1,6 @@
 import os
 from .template import Processor, Settings
-from .CONSTANT import *
+from .constant import *
 
 
 class Bowtie2(Processor):
