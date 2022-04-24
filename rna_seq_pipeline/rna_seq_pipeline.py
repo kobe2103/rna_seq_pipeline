@@ -54,8 +54,8 @@ class RNASeqPipeline(Processor):
         self.sorted_bam = Star(self.settings).main(
             ref_fa=self.ref_fa,
             gtf=self.gtf,
-            trimmed_fq1=self.trimmed_fq1,
-            trimmed_fq2=self.trimmed_fq2)
+            fq1=self.trimmed_fq1,
+            fq2=self.trimmed_fq2)
 
     def counting(self):
         self.count_csv = HTSeq(self.settings).main(

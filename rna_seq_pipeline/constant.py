@@ -7,7 +7,7 @@ MINIMUM_LENGTH = '50'
 MAPPING_OUT_SUFFIX = 'Aligned.sortedByCoord.out.bam'  # given by STAR
 OUT_SAM_TYPE = 'BAM SortedByCoordinate'
 LENGTH_OF_DONOR_SEQUENCE = '100'
-SAM_ATTIRBUTE = 'Standard'
+SAM_ATTRIBUTE = 'Standard'
 
 # for HTSeq
 STANDARD_SPECIFIC_ASSAY = 'yes'
