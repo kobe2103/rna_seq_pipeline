@@ -24,3 +24,7 @@ class TestCase(unittest.TestCase):
     def tear_down(self):
         for d in [self.workdir, self.outdir]:
             shutil.rmtree(d)
+
+    def assertFileExists(self, expected: str, actual: str):
+        self.assertEqual(expected, actual)
+        assert os.path.exists(actual)

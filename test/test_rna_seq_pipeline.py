@@ -7,8 +7,8 @@ class TestRNASeqPipeline(TestCase):
     def setUp(self):
         self.set_up(py_path=__file__)
 
-    # def tearDown(self):
-    #     self.tear_down()
+    def tearDown(self):
+        self.tear_down()
 
     def test_main(self):
         RNASeqPipeline(self.settings).main(
@@ -17,5 +17,6 @@ class TestRNASeqPipeline(TestCase):
             fq1=f'{self.indir}/1month-4NQO-3.1.fq.gz',
             fq2=f'{self.indir}/1month-4NQO-3.2.fq.gz',
             adapter_fwd='AGATCGGAAGAGC',
-            adapter_rev='AGATCGGAAGAGC'
+            adapter_rev='AGATCGGAAGAGC',
+            read_aligner='star',
         )

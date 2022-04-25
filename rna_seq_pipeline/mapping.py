@@ -3,6 +3,53 @@ from .constant import *
 from .template import Processor
 
 
+class Mapping(Processor):
+
+    ref_fa: str
+    gtf: str
+    fq1: str
+    fq2: str
+    read_aligner: str
+
+    sorted_bam: str
+
+    def main(
+            self,
+            ref_fa: str,
+            gtf: str,
+            fq1: str,
+            fq2: str,
+            read_aligner: str) -> str:
+
+        self.ref_fa = ref_fa
+        self.gtf = gtf
+        self.fq1 = fq1
+        self.fq2 = fq2
+        self.read_aligner = read_aligner.lower()
+
+        assert self.read_aligner in ['star', 'bowtie2']
+
+        if self.read_aligner == 'star':
+            self.run_star()
+        else:
+            self.run_bowtie2()
+
+        return self.sorted_bam
+
+    def run_star(self):
+        self.sorted_bam = Star(self.settings).main(
+            ref_fa=self.ref_fa,
+            gtf=self.gtf,
+            fq1=self.fq1,
+            fq2=self.fq2)
+
+    def run_bowtie2(self):
+        self.sorted_bam = Bowtie2(self.settings).main(
+            ref_fa=self.ref_fa,
+            fq1=self.fq1,
+            fq2=self.fq2)
+
+
 class Bowtie2(Processor):
 
     ref_fa: str
@@ -66,6 +113,7 @@ class Star(Processor):
 
     genome_dir: str
     mapping_out_prefix: str
+    sorted_bam: str
 
     def main(
             self,
@@ -81,8 +129,9 @@ class Star(Processor):
 
         self.indexing()
         self.mapping()
+        self.rename_bam()
 
-        return f'{self.mapping_out_prefix}{MAPPING_OUT_SUFFIX}'
+        return self.sorted_bam
 
     def indexing(self):
         self.genome_dir = f'{self.workdir}/genomeDir'
@@ -111,3 +160,8 @@ class Star(Processor):
                   --outSAMunmapped None \
                   --outSAMattributes {SAM_ATTRIBUTE}'''
         self.call(cmd)
+
+    def rename_bam(self):
+        src = f'{self.mapping_out_prefix}{MAPPING_OUT_SUFFIX}'
+        self.sorted_bam = f'{self.outdir}/sorted.bam'
+        self.call(f'mv {src} {self.sorted_bam}')

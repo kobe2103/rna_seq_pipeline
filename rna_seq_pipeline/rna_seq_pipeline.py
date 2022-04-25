@@ -1,7 +1,7 @@
+from .mapping import Mapping
+from .counting import HTSeq
 from .template import Processor
 from .trimming import Cutadapt, FastQC
-from .mapping import Star
-from .counting import HTSeq
 
 
 class RNASeqPipeline(Processor):
@@ -12,6 +12,7 @@ class RNASeqPipeline(Processor):
     fq2: str
     adapter_fwd: str
     adapter_rev: str
+    read_aligner: str
 
     trimmed_fq1: str
     trimmed_fq2: str
@@ -24,7 +25,8 @@ class RNASeqPipeline(Processor):
              fq1: str,
              fq2: str,
              adapter_fwd: str,
-             adapter_rev: str):
+             adapter_rev: str,
+             read_aligner: str):
 
         self.ref_fa = ref_fa
         self.gtf = gtf
@@ -32,6 +34,7 @@ class RNASeqPipeline(Processor):
         self.fq2 = fq2
         self.adapter_fwd = adapter_fwd
         self.adapter_rev = adapter_rev
+        self.read_aligner = read_aligner
 
         self.trimming()
         self.fastqc()
@@ -51,11 +54,12 @@ class RNASeqPipeline(Processor):
             fq2=self.trimmed_fq2)
 
     def mapping(self):
-        self.sorted_bam = Star(self.settings).main(
+        self.sorted_bam = Mapping(self.settings).main(
             ref_fa=self.ref_fa,
             gtf=self.gtf,
             fq1=self.trimmed_fq1,
-            fq2=self.trimmed_fq2)
+            fq2=self.trimmed_fq2,
+            read_aligner=self.read_aligner)
 
     def counting(self):
         self.count_csv = HTSeq(self.settings).main(

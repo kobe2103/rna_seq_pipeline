@@ -52,6 +52,16 @@ OPTIONAL = [
         }
     },
     {
+        'keys': ['--read-aligner'],
+        'properties': {
+            'type': str,
+            'required': False,
+            'choices': ['star', 'bowtie2'],
+            'default': 'star',
+            'help': 'read aligner (default: %(default)s)',
+        }
+    },
+    {
         'keys': ['-o', '--outdir'],
         'properties': {
             'type': str,
@@ -130,6 +140,7 @@ class EntryPoint:
             fq1=args.fq1,
             fq2=args.fq2,
             adapter=args.adapter,
+            read_aligner=args.read_aligner,
             outdir=args.outdir,
             threads=args.threads,
             debug=args.debug)

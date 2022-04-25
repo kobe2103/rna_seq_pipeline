@@ -12,6 +12,7 @@ class Main:
             fq1: str,
             fq2: str,
             adapter: str,
+            read_aligner: str,
             outdir: str,
             threads: str,
             debug: bool):
@@ -32,5 +33,6 @@ class Main:
             fq2=fq2,
             adapter_fwd=adapter,
             adapter_rev=adapter,
+            read_aligner=read_aligner,
             ref_fa=ref_fa,
             gtf=gtf)
