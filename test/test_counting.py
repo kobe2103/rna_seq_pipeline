@@ -11,7 +11,9 @@ class TestHTSeq(TestCase):
         self.tear_down()
 
     def test_main(self):
-        HTSeq(self.settings).main(
-            sorted_bam=f'{self.indir}/STAR_mapping_Aligned.sortedByCoord.out.bam',
+        actual = HTSeq(self.settings).main(
+            sorted_bam=f'{self.indir}/sorted.bam',
             gtf=f'{self.indir}/21_0501_subset_mouse_genome.gtf'
         )
+        expected = f'{self.outdir}/counts.tsv'
+        self.assertFileExists(expected, actual)
