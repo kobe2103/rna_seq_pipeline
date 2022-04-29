@@ -1,9 +1,11 @@
-from .constant import *
 from .template import Processor
 
 
 class HTSeq(Processor):
 
+    STANDARD_SPECIFIC_ASSAY = 'yes'
+    SKIP_LOWER_QUALITY_READ = '10'
+    MODE_TO_HANDLE_READ_OVERLAPPING = 'union'
     GENE_ID_COLUMN = 'gene_id'
     COUNT_COLUMN = 'count'
 
@@ -36,11 +38,11 @@ class HTSeq(Processor):
         cmd = f'''htseq-count \
                   --format bam \
                   --order name \
-                  --stranded {STANDARD_SPECIFIC_ASSAY} \
-                  -a {SKIP_LOWER_QUALITY_READ} \
+                  --stranded {self.STANDARD_SPECIFIC_ASSAY} \
+                  -a {self.SKIP_LOWER_QUALITY_READ} \
                   --type exon \
                   --idattr gene_id \
-                  --mode {MODE_TO_HANDLE_READ_OVERLAPPING} \
+                  --mode {self.MODE_TO_HANDLE_READ_OVERLAPPING} \
                   {self.sorted_bam} \
                   {self.gtf} \
                   1> {self.htseq_txt} \

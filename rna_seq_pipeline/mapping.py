@@ -1,5 +1,4 @@
 import os
-from .constant import *
 from .template import Processor
 
 
@@ -106,6 +105,11 @@ class Bowtie2(Processor):
 
 class Star(Processor):
 
+    MAPPING_OUT_SUFFIX = 'Aligned.sortedByCoord.out.bam'  # given by STAR
+    OUT_SAM_TYPE = 'BAM SortedByCoordinate'
+    LENGTH_OF_DONOR_SEQUENCE = '100'
+    SAM_ATTRIBUTES = 'Standard'
+
     ref_fa: str
     gtf: str
     fq1: str
@@ -143,7 +147,7 @@ class Star(Processor):
                   --genomeDir {self.genome_dir} \
                   --genomeFastaFiles {self.ref_fa} \
                   --sjdbGTFfile {self.gtf} \
-                  --sjdbOverhang {LENGTH_OF_DONOR_SEQUENCE} \
+                  --sjdbOverhang {self.LENGTH_OF_DONOR_SEQUENCE} \
                   --outFileNamePrefix {self.workdir}/STAR \
                   1> {log} \
                   2> {log}'''
@@ -155,13 +159,13 @@ class Star(Processor):
                   --genomeDir {self.genome_dir} \
                   --runThreadN {self.threads} \
                   --readFilesIn {self.fq1} {self.fq2} \
-                  --outSAMtype {OUT_SAM_TYPE} \
+                  --outSAMtype {self.OUT_SAM_TYPE} \
                   --outFileNamePrefix {self.mapping_out_prefix} \
                   --outSAMunmapped None \
-                  --outSAMattributes {SAM_ATTRIBUTE}'''
+                  --outSAMattributes {self.SAM_ATTRIBUTES}'''
         self.call(cmd)
 
     def rename_bam(self):
-        src = f'{self.mapping_out_prefix}{MAPPING_OUT_SUFFIX}'
+        src = f'{self.mapping_out_prefix}{self.MAPPING_OUT_SUFFIX}'
         self.sorted_bam = f'{self.outdir}/sorted.bam'
         self.call(f'mv {src} {self.sorted_bam}')

@@ -1,9 +1,12 @@
-from .template import Processor
-from .constant import *
 from typing import Tuple
+from .template import Processor
 
 
 class Cutadapt(Processor):
+
+    MINIMUM_OVERLAP = '3'
+    MAXIMUM_ERROR_RATE = '0.1'
+    MINIMUM_LENGTH = '50'
 
     fq1: str
     fq2: str
@@ -36,9 +39,9 @@ class Cutadapt(Processor):
         cmd = f'cutadapt \
                 --adapter {self.adapter_fwd} \
                 -A {self.adapter_rev} \
-                --overlap {MINIMUM_OVERLAP} \
-                --error-rate {MAXIMUM_ERROR_RATE} \
-                --minimum-length {MINIMUM_LENGTH} \
+                --overlap {self.MINIMUM_OVERLAP} \
+                --error-rate {self.MAXIMUM_ERROR_RATE} \
+                --minimum-length {self.MINIMUM_LENGTH} \
                 --output {self.trimmed_fq1} \
                 --paired-output {self.trimmed_fq2} \
                 {self.fq1} \

@@ -1,5 +1,5 @@
-from .mapping import Mapping
 from .counting import HTSeq
+from .mapping import Mapping
 from .template import Processor
 from .trimming import Cutadapt, FastQC
 
