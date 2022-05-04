@@ -18,4 +18,5 @@ class TestRNASeqPipeline(TestCase):
             fq2=f'{self.indir}/1month-4NQO-3.2.fq.gz',
             adapter='AGATCGGAAGAGC',
             read_aligner='star',
+            discard_bam=False
         )

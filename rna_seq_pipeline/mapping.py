@@ -1,4 +1,5 @@
 import os
+from os.path import basename
 from .template import Processor
 
 
@@ -9,6 +10,7 @@ class Mapping(Processor):
     fq1: str
     fq2: str
     read_aligner: str
+    discard_bam: bool
 
     sorted_bam: str
 
@@ -18,13 +20,15 @@ class Mapping(Processor):
             gtf: str,
             fq1: str,
             fq2: str,
-            read_aligner: str) -> str:
+            read_aligner: str,
+            discard_bam: bool) -> str:
 
         self.ref_fa = ref_fa
         self.gtf = gtf
         self.fq1 = fq1
         self.fq2 = fq2
         self.read_aligner = read_aligner.lower()
+        self.discard_bam = discard_bam
 
         assert self.read_aligner in ['star', 'bowtie2']
 
@@ -34,6 +38,7 @@ class Mapping(Processor):
             self.run_bowtie2()
 
         self.mapping_stats()
+        self.move_if_discard_bam()
 
         return self.sorted_bam
 
@@ -53,6 +58,12 @@ class Mapping(Processor):
     def mapping_stats(self):
         txt = f'{self.outdir}/mapping-stats.txt'
         self.call(f'samtools stats {self.sorted_bam} > {txt}')
+
+    def move_if_discard_bam(self):
+        if self.discard_bam:
+            dst = f'{self.workdir}/{basename(self.sorted_bam)}'
+            self.call(f'mv {self.sorted_bam} {dst}')
+            self.sorted_bam = dst
 
 
 class Bowtie2(Processor):

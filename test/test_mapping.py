@@ -16,9 +16,10 @@ class TestMapping(TestCase):
             gtf=f'{self.indir}/21_0501_subset_mouse_genome.gtf',
             fq1=f'{self.indir}/trimmed_1.fq',
             fq2=f'{self.indir}/trimmed_2.fq',
-            read_aligner='STAR'
+            read_aligner='STAR',
+            discard_bam=True
         )
-        expected = f'{self.outdir}/sorted.bam'
+        expected = f'{self.workdir}/sorted.bam'
         self.assertFileExists(expected, actual)
 
 

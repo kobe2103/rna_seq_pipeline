@@ -62,6 +62,13 @@ OPTIONAL = [
         }
     },
     {
+        'keys': ['--discard-bam'],
+        'properties': {
+            'action': 'store_true',
+            'help': 'do not save sorted BAM files in outdir',
+        }
+    },
+    {
         'keys': ['-o', '--outdir'],
         'properties': {
             'type': str,
@@ -141,6 +148,7 @@ class EntryPoint:
             fq2=args.fq2,
             adapter=args.adapter,
             read_aligner=args.read_aligner,
+            discard_bam=args.discard_bam,
             outdir=args.outdir,
             threads=args.threads,
             debug=args.debug)

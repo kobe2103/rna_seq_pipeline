@@ -13,6 +13,7 @@ class Main:
             fq2: str,
             adapter: str,
             read_aligner: str,
+            discard_bam: bool,
             outdir: str,
             threads: str,
             debug: bool):
@@ -33,5 +34,6 @@ class Main:
             fq2=fq2,
             adapter=adapter,
             read_aligner=read_aligner,
+            discard_bam=discard_bam,
             ref_fa=ref_fa,
             gtf=gtf)

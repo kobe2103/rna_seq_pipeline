@@ -12,6 +12,7 @@ class RNASeqPipeline(Processor):
     fq2: str
     adapter: str
     read_aligner: str
+    discard_bam: bool
 
     trimmed_fq1: str
     trimmed_fq2: str
@@ -24,7 +25,8 @@ class RNASeqPipeline(Processor):
              fq1: str,
              fq2: str,
              adapter: str,
-             read_aligner: str):
+             read_aligner: str,
+             discard_bam: bool):
 
         self.ref_fa = ref_fa
         self.gtf = gtf
@@ -32,6 +34,7 @@ class RNASeqPipeline(Processor):
         self.fq2 = fq2
         self.adapter = adapter
         self.read_aligner = read_aligner
+        self.discard_bam = discard_bam
 
         self.trimming()
         self.fastqc()
@@ -55,7 +58,8 @@ class RNASeqPipeline(Processor):
             gtf=self.gtf,
             fq1=self.trimmed_fq1,
             fq2=self.trimmed_fq2,
-            read_aligner=self.read_aligner)
+            read_aligner=self.read_aligner,
+            discard_bam=self.discard_bam)
 
     def counting(self):
         self.count_csv = HTSeq(self.settings).main(
