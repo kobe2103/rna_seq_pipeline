@@ -16,7 +16,6 @@ class TestRNASeqPipeline(TestCase):
             gtf=f'{self.indir}/21_0501_subset_mouse_genome.gtf',
             fq1=f'{self.indir}/1month-4NQO-3.1.fq.gz',
             fq2=f'{self.indir}/1month-4NQO-3.2.fq.gz',
-            adapter_fwd='AGATCGGAAGAGC',
-            adapter_rev='AGATCGGAAGAGC',
+            adapter='AGATCGGAAGAGC',
             read_aligner='star',
         )

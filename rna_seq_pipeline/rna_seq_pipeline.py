@@ -10,8 +10,7 @@ class RNASeqPipeline(Processor):
     gtf: str
     fq1: str
     fq2: str
-    adapter_fwd: str
-    adapter_rev: str
+    adapter: str
     read_aligner: str
 
     trimmed_fq1: str
@@ -24,16 +23,14 @@ class RNASeqPipeline(Processor):
              gtf: str,
              fq1: str,
              fq2: str,
-             adapter_fwd: str,
-             adapter_rev: str,
+             adapter: str,
              read_aligner: str):
 
         self.ref_fa = ref_fa
         self.gtf = gtf
         self.fq1 = fq1
         self.fq2 = fq2
-        self.adapter_fwd = adapter_fwd
-        self.adapter_rev = adapter_rev
+        self.adapter = adapter
         self.read_aligner = read_aligner
 
         self.trimming()
@@ -45,8 +42,7 @@ class RNASeqPipeline(Processor):
         self.trimmed_fq1, self.trimmed_fq2 = Cutadapt(self.settings).main(
             fq1=self.fq1,
             fq2=self.fq2,
-            adapter_fwd=self.adapter_fwd,
-            adapter_rev=self.adapter_rev)
+            adapter=self.adapter)
 
     def fastqc(self):
         FastQC(self.settings).main(

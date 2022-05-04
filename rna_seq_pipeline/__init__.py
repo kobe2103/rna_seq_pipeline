@@ -31,8 +31,7 @@ class Main:
         RNASeqPipeline(settings).main(
             fq1=fq1,
             fq2=fq2,
-            adapter_fwd=adapter,
-            adapter_rev=adapter,
+            adapter=adapter,
             read_aligner=read_aligner,
             ref_fa=ref_fa,
             gtf=gtf)

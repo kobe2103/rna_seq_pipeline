@@ -27,4 +27,4 @@ class TestCase(unittest.TestCase):
 
     def assertFileExists(self, expected: str, actual: str):
         self.assertEqual(expected, actual)
-        assert os.path.exists(actual)
+        self.assertTrue(os.path.exists(actual))

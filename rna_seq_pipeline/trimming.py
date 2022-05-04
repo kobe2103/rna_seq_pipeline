@@ -10,21 +10,18 @@ class Cutadapt(Processor):
 
     fq1: str
     fq2: str
-    adapter_fwd: str
-    adapter_rev: str
+    adapter: str
     trimmed_fq1: str
     trimmed_fq2: str
 
     def main(self,
              fq1: str,
              fq2: str,
-             adapter_fwd: str,
-             adapter_rev: str) -> Tuple[str, str]:
+             adapter: str) -> Tuple[str, str]:
 
         self.fq1 = fq1
         self.fq2 = fq2
-        self.adapter_fwd = adapter_fwd
-        self.adapter_rev = adapter_rev
+        self.adapter = adapter
 
         self.set_output_paths()
         self.cutadapt()
@@ -36,16 +33,19 @@ class Cutadapt(Processor):
         self.trimmed_fq2 = f'{self.outdir}/trimmed_2.fq'
 
     def cutadapt(self):
-        cmd = f'cutadapt \
-                --adapter {self.adapter_fwd} \
-                -A {self.adapter_rev} \
-                --overlap {self.MINIMUM_OVERLAP} \
-                --error-rate {self.MAXIMUM_ERROR_RATE} \
-                --minimum-length {self.MINIMUM_LENGTH} \
-                --output {self.trimmed_fq1} \
-                --paired-output {self.trimmed_fq2} \
-                {self.fq1} \
-                {self.fq2}'
+        log = f'{self.outdir}/cutadapt.log'
+        cmd = f'''cutadapt \
+                  --adapter {self.adapter} \
+                  -A {self.adapter} \
+                  --overlap {self.MINIMUM_OVERLAP} \
+                  --error-rate {self.MAXIMUM_ERROR_RATE} \
+                  --minimum-length {self.MINIMUM_LENGTH} \
+                  --output {self.trimmed_fq1} \
+                  --paired-output {self.trimmed_fq2} \
+                  {self.fq1} \
+                  {self.fq2} \
+                  1> {log} \
+                  2> {log}'''
         self.call(cmd)
 
 
