@@ -31,7 +31,7 @@ class Main:
 
         RNASeqPipeline(settings).main(
             fq1=fq1,
-            fq2=fq2,
+            fq2=fq2 if fq2 != 'None' else None,
             adapter=adapter,
             read_aligner=read_aligner,
             discard_bam=discard_bam,

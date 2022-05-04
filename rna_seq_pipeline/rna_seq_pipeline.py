@@ -1,3 +1,4 @@
+from typing import Optional
 from .counting import HTSeq
 from .mapping import Mapping
 from .template import Processor
@@ -9,7 +10,7 @@ class RNASeqPipeline(Processor):
     ref_fa: str
     gtf: str
     fq1: str
-    fq2: str
+    fq2: Optional[str]
     adapter: str
     read_aligner: str
     discard_bam: bool
@@ -23,7 +24,7 @@ class RNASeqPipeline(Processor):
              ref_fa: str,
              gtf: str,
              fq1: str,
-             fq2: str,
+             fq2: Optional[str],
              adapter: str,
              read_aligner: str,
              discard_bam: bool):

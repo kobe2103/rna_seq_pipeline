@@ -32,16 +32,17 @@ REQUIRED = [
             'help': 'path to the read 1 fastq file',
         }
     },
+]
+OPTIONAL = [
     {
         'keys': ['-2', '--fq2'],
         'properties': {
             'type': str,
-            'required': True,
+            'required': False,
+            'default': 'None',
             'help': 'path to the read 2 fastq file',
         }
     },
-]
-OPTIONAL = [
     {
         'keys': ['-a', '--adapter'],
         'properties': {
