@@ -1,4 +1,5 @@
 import os
+from typing import Optional
 from os.path import basename
 from .template import Processor
 
@@ -8,7 +9,7 @@ class Mapping(Processor):
     ref_fa: str
     gtf: str
     fq1: str
-    fq2: str
+    fq2: Optional[str]
     read_aligner: str
     discard_bam: bool
 
@@ -19,7 +20,7 @@ class Mapping(Processor):
             ref_fa: str,
             gtf: str,
             fq1: str,
-            fq2: str,
+            fq2: Optional[str],
             read_aligner: str,
             discard_bam: bool) -> str:
 
@@ -70,7 +71,7 @@ class Bowtie2(Processor):
 
     ref_fa: str
     fq1: str
-    fq2: str
+    fq2: Optional[str]
 
     idx: str
     sam: str
@@ -81,14 +82,17 @@ class Bowtie2(Processor):
             self,
             ref_fa: str,
             fq1: str,
-            fq2: str) -> str:
+            fq2: Optional[str]) -> str:
 
         self.ref_fa = ref_fa
         self.fq1 = fq1
         self.fq2 = fq2
 
         self.indexing()
-        self.mapping()
+        if self.fq2 is None:
+            self.single_end_mapping()
+        else:
+            self.paired_end_mapping()
         self.sam_to_bam()
         self.sort_bam()
 
@@ -99,7 +103,18 @@ class Bowtie2(Processor):
         log = f'{self.outdir}/bowtie2-build.log'
         self.call(f'bowtie2-build {self.ref_fa} {self.idx} 1> {log} 2> {log}')
 
-    def mapping(self):
+    def single_end_mapping(self):
+        log = f'{self.outdir}/bowtie2.log'
+        self.sam = f'{self.workdir}/mapped.sam'
+        cmd = f'''bowtie2 \
+                  -x {self.idx} \
+                  -U {self.fq1} \
+                  -S {self.sam} \
+                  1> {log} \
+                  2> {log}'''
+        self.call(cmd)
+
+    def paired_end_mapping(self):
         log = f'{self.outdir}/bowtie2.log'
         self.sam = f'{self.workdir}/mapped.sam'
         cmd = f'''bowtie2 \
@@ -130,7 +145,7 @@ class Star(Processor):
     ref_fa: str
     gtf: str
     fq1: str
-    fq2: str
+    fq2: Optional[str]
 
     genome_dir: str
     mapping_out_prefix: str
@@ -141,7 +156,7 @@ class Star(Processor):
             ref_fa: str,
             gtf: str,
             fq1: str,
-            fq2: str) -> str:
+            fq2: Optional[str]) -> str:
 
         self.ref_fa = ref_fa
         self.gtf = gtf
@@ -149,7 +164,10 @@ class Star(Processor):
         self.fq2 = fq2
 
         self.indexing()
-        self.mapping()
+        if self.fq2 is None:
+            self.single_end_mapping()
+        else:
+            self.paired_end_mapping()
         self.rename_bam()
 
         return self.sorted_bam
@@ -170,7 +188,19 @@ class Star(Processor):
                   2> {log}'''
         self.call(cmd)
 
-    def mapping(self):
+    def single_end_mapping(self):
+        self.mapping_out_prefix = f'{self.outdir}/STAR_mapping_'
+        cmd = f'''STAR \
+                  --genomeDir {self.genome_dir} \
+                  --runThreadN {self.threads} \
+                  --readFilesIn {self.fq1} \
+                  --outSAMtype {self.OUT_SAM_TYPE} \
+                  --outFileNamePrefix {self.mapping_out_prefix} \
+                  --outSAMunmapped None \
+                  --outSAMattributes {self.SAM_ATTRIBUTES}'''
+        self.call(cmd)
+
+    def paired_end_mapping(self):
         self.mapping_out_prefix = f'{self.outdir}/STAR_mapping_'
         cmd = f'''STAR \
                   --genomeDir {self.genome_dir} \

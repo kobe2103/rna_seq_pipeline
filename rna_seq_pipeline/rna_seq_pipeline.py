@@ -16,7 +16,7 @@ class RNASeqPipeline(Processor):
     discard_bam: bool
 
     trimmed_fq1: str
-    trimmed_fq2: str
+    trimmed_fq2: Optional[str]
     sorted_bam: str
     count_csv: str
 
