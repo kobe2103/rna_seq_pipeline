@@ -189,7 +189,8 @@ class Star(Processor):
         self.call(cmd)
 
     def single_end_mapping(self):
-        self.mapping_out_prefix = f'{self.outdir}/STAR_mapping_'
+        self.__set_mapping_out_prefix()
+        log = f'{self.outdir}/STAR.log'
         cmd = f'''STAR \
                   --genomeDir {self.genome_dir} \
                   --runThreadN {self.threads} \
@@ -197,11 +198,14 @@ class Star(Processor):
                   --outSAMtype {self.OUT_SAM_TYPE} \
                   --outFileNamePrefix {self.mapping_out_prefix} \
                   --outSAMunmapped None \
-                  --outSAMattributes {self.SAM_ATTRIBUTES}'''
+                  --outSAMattributes {self.SAM_ATTRIBUTES} \
+                  1> {log} \
+                  2> {log}'''
         self.call(cmd)
 
     def paired_end_mapping(self):
-        self.mapping_out_prefix = f'{self.outdir}/STAR_mapping_'
+        self.__set_mapping_out_prefix()
+        log = f'{self.outdir}/STAR.log'
         cmd = f'''STAR \
                   --genomeDir {self.genome_dir} \
                   --runThreadN {self.threads} \
@@ -209,8 +213,13 @@ class Star(Processor):
                   --outSAMtype {self.OUT_SAM_TYPE} \
                   --outFileNamePrefix {self.mapping_out_prefix} \
                   --outSAMunmapped None \
-                  --outSAMattributes {self.SAM_ATTRIBUTES}'''
+                  --outSAMattributes {self.SAM_ATTRIBUTES} \
+                  1> {log} \
+                  2> {log}'''
         self.call(cmd)
+
+    def __set_mapping_out_prefix(self):
+        self.mapping_out_prefix = f'{self.outdir}/STAR_mapping_'
 
     def rename_bam(self):
         src = f'{self.mapping_out_prefix}{self.MAPPING_OUT_SUFFIX}'

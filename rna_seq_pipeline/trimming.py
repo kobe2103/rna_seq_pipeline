@@ -141,5 +141,6 @@ class FastQC(Processor):
                   --outdir {self.outdir} \
                   --threads {self.threads} \
                   {self.fq1} {fq2} \
-                  1> {log} 2> {log}'''
+                  1> {log} \
+                  2> {log}'''
         self.call(cmd)
