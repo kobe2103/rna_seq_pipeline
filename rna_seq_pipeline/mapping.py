@@ -106,24 +106,24 @@ class Bowtie2(Processor):
     def single_end_mapping(self):
         log = f'{self.outdir}/bowtie2.log'
         self.sam = f'{self.workdir}/mapped.sam'
-        cmd = f'''bowtie2 \
-                  -x {self.idx} \
-                  -U {self.fq1} \
-                  -S {self.sam} \
-                  1> {log} \
-                  2> {log}'''
+        cmd = f'''bowtie2 \\
+-x {self.idx} \\
+-U {self.fq1} \\
+-S {self.sam} \\
+1> {log} \\
+2> {log}'''
         self.call(cmd)
 
     def paired_end_mapping(self):
         log = f'{self.outdir}/bowtie2.log'
         self.sam = f'{self.workdir}/mapped.sam'
-        cmd = f'''bowtie2 \
-                  -x {self.idx} \
-                  -1 {self.fq1} \
-                  -2 {self.fq2} \
-                  -S {self.sam} \
-                  1> {log} \
-                  2> {log}'''
+        cmd = f'''bowtie2 \\
+-x {self.idx} \\
+-1 {self.fq1} \\
+-2 {self.fq2} \\
+-S {self.sam} \\
+1> {log} \\
+2> {log}'''
         self.call(cmd)
 
     def sam_to_bam(self):
@@ -176,46 +176,46 @@ class Star(Processor):
         self.genome_dir = f'{self.workdir}/genomeDir'
         os.makedirs(self.genome_dir, exist_ok=True)
         log = f'{self.outdir}/STAR-genomeGenerate.log'
-        cmd = f'''STAR \
-                  --runThreadN {self.threads} \
-                  --runMode genomeGenerate \
-                  --genomeDir {self.genome_dir} \
-                  --genomeFastaFiles {self.ref_fa} \
-                  --sjdbGTFfile {self.gtf} \
-                  --sjdbOverhang {self.LENGTH_OF_DONOR_SEQUENCE} \
-                  --outFileNamePrefix {self.workdir}/STAR \
-                  1> {log} \
-                  2> {log}'''
+        cmd = f'''STAR \\
+--runThreadN {self.threads} \\
+--runMode genomeGenerate \\
+--genomeDir {self.genome_dir} \\
+--genomeFastaFiles {self.ref_fa} \\
+--sjdbGTFfile {self.gtf} \\
+--sjdbOverhang {self.LENGTH_OF_DONOR_SEQUENCE} \\
+--outFileNamePrefix {self.workdir}/STAR \\
+1> {log} \\
+2> {log}'''
         self.call(cmd)
 
     def single_end_mapping(self):
         self.__set_mapping_out_prefix()
         log = f'{self.outdir}/STAR.log'
-        cmd = f'''STAR \
-                  --genomeDir {self.genome_dir} \
-                  --runThreadN {self.threads} \
-                  --readFilesIn {self.fq1} \
-                  --outSAMtype {self.OUT_SAM_TYPE} \
-                  --outFileNamePrefix {self.mapping_out_prefix} \
-                  --outSAMunmapped None \
-                  --outSAMattributes {self.SAM_ATTRIBUTES} \
-                  1> {log} \
-                  2> {log}'''
+        cmd = f'''STAR \\
+--genomeDir {self.genome_dir} \\
+--runThreadN {self.threads} \\
+--readFilesIn {self.fq1} \\
+--outSAMtype {self.OUT_SAM_TYPE} \\
+--outFileNamePrefix {self.mapping_out_prefix} \\
+--outSAMunmapped None \\
+--outSAMattributes {self.SAM_ATTRIBUTES} \\
+1> {log} \\
+2> {log}'''
         self.call(cmd)
 
     def paired_end_mapping(self):
         self.__set_mapping_out_prefix()
         log = f'{self.outdir}/STAR.log'
-        cmd = f'''STAR \
-                  --genomeDir {self.genome_dir} \
-                  --runThreadN {self.threads} \
-                  --readFilesIn {self.fq1} {self.fq2} \
-                  --outSAMtype {self.OUT_SAM_TYPE} \
-                  --outFileNamePrefix {self.mapping_out_prefix} \
-                  --outSAMunmapped None \
-                  --outSAMattributes {self.SAM_ATTRIBUTES} \
-                  1> {log} \
-                  2> {log}'''
+        cmd = f'''STAR \\
+--genomeDir {self.genome_dir} \\
+--runThreadN {self.threads} \\
+--readFilesIn {self.fq1} {self.fq2} \\
+--outSAMtype {self.OUT_SAM_TYPE} \\
+--outFileNamePrefix {self.mapping_out_prefix} \\
+--outSAMunmapped None \\
+--outSAMattributes {self.SAM_ATTRIBUTES} \\
+1> {log} \\
+2> {log}'''
         self.call(cmd)
 
     def __set_mapping_out_prefix(self):

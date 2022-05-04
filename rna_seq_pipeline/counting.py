@@ -35,18 +35,18 @@ class HTSeq(Processor):
     def htseq(self):
         self.htseq_txt = f'{self.workdir}/counts.txt'
         log = f'{self.outdir}/htseq-count.log'
-        cmd = f'''htseq-count \
-                  --format bam \
-                  --order name \
-                  --stranded {self.STANDARD_SPECIFIC_ASSAY} \
-                  -a {self.SKIP_LOWER_QUALITY_READ} \
-                  --type exon \
-                  --idattr gene_id \
-                  --mode {self.MODE_TO_HANDLE_READ_OVERLAPPING} \
-                  {self.sorted_bam} \
-                  {self.gtf} \
-                  1> {self.htseq_txt} \
-                  2> {log}'''
+        cmd = f'''htseq-count \\
+--format bam \\
+--order name \\
+--stranded {self.STANDARD_SPECIFIC_ASSAY} \\
+-a {self.SKIP_LOWER_QUALITY_READ} \\
+--type exon \\
+--idattr gene_id \\
+--mode {self.MODE_TO_HANDLE_READ_OVERLAPPING} \\
+{self.sorted_bam} \\
+{self.gtf} \\
+1> {self.htseq_txt} \\
+2> {log}'''
         self.call(cmd)
 
     def write_count_tsv(self):

@@ -14,7 +14,6 @@ RUN conda create -n rna-seq \
 ENV PATH /opt/conda/envs/rna-seq/bin:$PATH
 
 RUN /opt/conda/envs/rna-seq/bin/pip install --no-cache-dir \
-    cutadapt==4.0 \
     HTSeq==2.0.1
 
 COPY rna_seq_pipeline/* /rna_seq_pipeline/rna_seq_pipeline/

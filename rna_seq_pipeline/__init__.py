@@ -1,6 +1,6 @@
 import os
-from .rna_seq_pipeline import RNASeqPipeline
 from .template import Settings
+from .rna_seq_pipeline import RNASeqPipeline
 
 
 class Main:

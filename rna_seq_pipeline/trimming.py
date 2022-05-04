@@ -69,18 +69,18 @@ class CutadaptPairedEnd(CutadaptBase):
 
     def cutadapt(self):
         log = f'{self.outdir}/cutadapt.log'
-        cmd = f'''cutadapt \
-                  --adapter {self.adapter} \
-                  -A {self.adapter} \
-                  --overlap {self.MINIMUM_OVERLAP} \
-                  --error-rate {self.MAXIMUM_ERROR_RATE} \
-                  --minimum-length {self.MINIMUM_LENGTH} \
-                  --output {self.trimmed_fq1} \
-                  --paired-output {self.trimmed_fq2} \
-                  {self.fq1} \
-                  {self.fq2} \
-                  1> {log} \
-                  2> {log}'''
+        cmd = f'''cutadapt \\
+--adapter {self.adapter} \\
+-A {self.adapter} \\
+--overlap {self.MINIMUM_OVERLAP} \\
+--error-rate {self.MAXIMUM_ERROR_RATE} \\
+--minimum-length {self.MINIMUM_LENGTH} \\
+--output {self.trimmed_fq1} \\
+--paired-output {self.trimmed_fq2} \\
+{self.fq1} \\
+{self.fq2} \\
+1> {log} \\
+2> {log}'''
         self.call(cmd)
 
 
@@ -108,15 +108,15 @@ class CutadaptSingleEnd(CutadaptBase):
 
     def cutadapt(self):
         log = f'{self.outdir}/cutadapt.log'
-        cmd = f'''cutadapt \
-                  --adapter {self.adapter} \
-                  --overlap {self.MINIMUM_OVERLAP} \
-                  --error-rate {self.MAXIMUM_ERROR_RATE} \
-                  --minimum-length {self.MINIMUM_LENGTH} \
-                  --output {self.trimmed_fq} \
-                  {self.fq} \
-                  1> {log} \
-                  2> {log}'''
+        cmd = f'''cutadapt \\
+--adapter {self.adapter} \\
+--overlap {self.MINIMUM_OVERLAP} \\
+--error-rate {self.MAXIMUM_ERROR_RATE} \\
+--minimum-length {self.MINIMUM_LENGTH} \\
+--output {self.trimmed_fq} \\
+{self.fq} \\
+1> {log} \\
+2> {log}'''
         self.call(cmd)
 
 
@@ -137,10 +137,10 @@ class FastQC(Processor):
     def fastqc(self):
         log = f'{self.outdir}/fastqc.log'
         fq2 = '' if self.fq2 is None else self.fq2
-        cmd = f'''fastqc \
-                  --outdir {self.outdir} \
-                  --threads {self.threads} \
-                  {self.fq1} {fq2} \
-                  1> {log} \
-                  2> {log}'''
+        cmd = f'''fastqc \\
+--outdir {self.outdir} \\
+--threads {self.threads} \\
+{self.fq1} {fq2} \\
+1> {log} \\
+2> {log}'''
         self.call(cmd)
