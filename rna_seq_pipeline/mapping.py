@@ -33,6 +33,8 @@ class Mapping(Processor):
         else:
             self.run_bowtie2()
 
+        self.mapping_stats()
+
         return self.sorted_bam
 
     def run_star(self):
@@ -47,6 +49,10 @@ class Mapping(Processor):
             ref_fa=self.ref_fa,
             fq1=self.fq1,
             fq2=self.fq2)
+
+    def mapping_stats(self):
+        txt = f'{self.outdir}/mapping-stats.txt'
+        self.call(f'samtools stats {self.sorted_bam} > {txt}')
 
 
 class Bowtie2(Processor):
