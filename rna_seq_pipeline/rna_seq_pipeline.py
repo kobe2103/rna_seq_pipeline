@@ -42,6 +42,7 @@ class RNASeqPipeline(Processor):
         self.fastqc()
         self.mapping()
         self.counting()
+        self.clean_up()
 
     def trimming(self):
         self.trimmed_fq1, self.trimmed_fq2 = Cutadapt(self.settings).main(
