@@ -12,8 +12,8 @@ class TestRNASeqPipeline(TestCase):
 
     def test_main(self):
         RNASeqPipeline(self.settings).main(
-            ref_fa=f'{self.indir}/21_0501_subset_mouse_genome.fa',
-            gtf=f'{self.indir}/21_0501_subset_mouse_genome.gtf',
+            ref_fa=f'{self.indir}/21_0501_subset_mouse_genome.fa.gz',
+            gtf=f'{self.indir}/21_0501_subset_mouse_genome.gtf.gz',
             fq1=f'{self.indir}/1month-4NQO-3.1.fq.gz',
             fq2=f'{self.indir}/1month-4NQO-3.2.fq.gz',
             adapter='AGATCGGAAGAGC',

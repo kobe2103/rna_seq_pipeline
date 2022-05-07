@@ -4,6 +4,7 @@ from .clean_up import CleanUp
 from .counting import Counting
 from .template import Processor
 from .trimming import Cutadapt, FastQC
+from .copy_ref_files import CopyRefFiles
 
 
 class RNASeqPipeline(Processor):
@@ -38,11 +39,16 @@ class RNASeqPipeline(Processor):
         self.read_aligner = read_aligner
         self.discard_bam = discard_bam
 
+        self.copy_ref_files()
         self.trimming()
         self.fastqc()
         self.mapping()
         self.counting()
         self.clean_up()
+
+    def copy_ref_files(self):
+        self.ref_fa, self.gtf = CopyRefFiles(self.settings).main(
+            ref_fa=self.ref_fa, gtf=self.gtf)
 
     def trimming(self):
         self.trimmed_fq1, self.trimmed_fq2 = Cutadapt(self.settings).main(
