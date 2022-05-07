@@ -1,8 +1,8 @@
 from .setup import TestCase
-from rna_seq_pipeline.counting import HTSeq
+from rna_seq_pipeline.counting import Counting, HTSeqCount, WriteCountCsv, WriteOtherCountTxt
 
 
-class TestHTSeq(TestCase):
+class TestCounting(TestCase):
 
     def setUp(self):
         self.set_up(py_path=__file__)
@@ -11,9 +11,63 @@ class TestHTSeq(TestCase):
         self.tear_down()
 
     def test_main(self):
-        actual = HTSeq(self.settings).main(
+        actual = Counting(self.settings).main(
             sorted_bam=f'{self.indir}/sorted.bam',
-            gtf=f'{self.indir}/21_0501_subset_mouse_genome.gtf'
+            gtf=f'{self.indir}/21_0501_subset_mouse_genome.gtf',
         )
-        expected = f'{self.outdir}/counts.tsv'
+        expected = f'{self.indir}/counts.csv'
+        self.assertFileEqual(expected, actual)
+
+
+class TestHTSeqCount(TestCase):
+
+    def setUp(self):
+        self.set_up(py_path=__file__)
+
+    def tearDown(self):
+        self.tear_down()
+
+    def test_main(self):
+        actual = HTSeqCount(self.settings).main(
+            sorted_bam=f'{self.indir}/sorted.bam',
+            gtf=f'{self.indir}/21_0501_subset_mouse_genome.gtf',
+            feature_type='exon',
+        )
+        expected = f'{self.workdir}/htseq-count-exon.txt'
         self.assertFileExists(expected, actual)
+
+
+class TestWriteCountCsv(TestCase):
+
+    def setUp(self):
+        self.set_up(py_path=__file__)
+
+    def tearDown(self):
+        self.tear_down()
+
+    def test_main(self):
+        WriteCountCsv(self.settings).main(
+            feature_type_to_count_txt={
+                'gene': f'{self.indir}/htseq/htseq-count-gene.txt',
+                'exon': f'{self.indir}/htseq/htseq-count-exon.txt',
+                'UTR': f'{self.indir}/htseq/htseq-count-UTR.txt'
+            }
+        )
+
+
+class TestWriteOtherCountTxt(TestCase):
+
+    def setUp(self):
+        self.set_up(py_path=__file__)
+
+    def tearDown(self):
+        self.tear_down()
+
+    def test_main(self):
+        WriteOtherCountTxt(self.settings).main(
+            feature_type_to_count_txt={
+                'gene': f'{self.indir}/htseq/htseq-count-gene.txt',
+                'exon': f'{self.indir}/htseq/htseq-count-exon.txt',
+                'UTR': f'{self.indir}/htseq/htseq-count-UTR.txt'
+            }
+        )

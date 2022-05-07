@@ -9,6 +9,8 @@ RUN conda create -n rna-seq \
     bowtie2=2.3.5 \
     star=2.7.10 \
     fastqc=0.11.9 \
+ && conda install -c anaconda -n somatic \
+    pandas=1.3.5 \
  && conda clean --all --yes
 
 ENV PATH /opt/conda/envs/rna-seq/bin:$PATH

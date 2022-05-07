@@ -1,7 +1,7 @@
 from typing import Optional
-from .counting import HTSeq
 from .mapping import Mapping
 from .clean_up import CleanUp
+from .counting import Counting
 from .template import Processor
 from .trimming import Cutadapt, FastQC
 
@@ -65,7 +65,7 @@ class RNASeqPipeline(Processor):
             discard_bam=self.discard_bam)
 
     def counting(self):
-        self.count_csv = HTSeq(self.settings).main(
+        self.count_csv = Counting(self.settings).main(
             sorted_bam=self.sorted_bam,
             gtf=self.gtf)
 

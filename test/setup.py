@@ -28,3 +28,8 @@ class TestCase(unittest.TestCase):
     def assertFileExists(self, expected: str, actual: str):
         self.assertEqual(expected, actual)
         self.assertTrue(os.path.exists(actual))
+
+    def assertFileEqual(self, file1: str, file2: str):
+        with open(file1) as fh1:
+            with open(file2) as fh2:
+                self.assertEqual(fh1.read(), fh2.read())
