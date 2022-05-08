@@ -7,27 +7,33 @@ class Cutadapt(Processor):
     fq1: str
     fq2: Optional[str]
     adapter: str
+    base_quality_cutoff: int
+
     trimmed_fq1: str
     trimmed_fq2: Optional[str]
 
     def main(self,
              fq1: str,
              fq2: Optional[str],
-             adapter: str) -> Tuple[str, Optional[str]]:
+             adapter: str,
+             base_quality_cutoff: int) -> Tuple[str, Optional[str]]:
 
         self.fq1 = fq1
         self.fq2 = fq2
         self.adapter = adapter
+        self.base_quality_cutoff = base_quality_cutoff
 
         if self.fq2 is not None:
             self.trimmed_fq1, self.trimmed_fq2 = CutadaptPairedEnd(self.settings).main(
                 fq1=self.fq1,
                 fq2=self.fq2,
-                adapter=self.adapter)
+                adapter=self.adapter,
+                base_quality_cutoff=self.base_quality_cutoff)
         else:
             self.trimmed_fq1 = CutadaptSingleEnd(self.settings).main(
                 fq=self.fq1,
-                adapter=self.adapter)
+                adapter=self.adapter,
+                base_quality_cutoff=self.base_quality_cutoff)
             self.trimmed_fq2 = None
 
         return self.trimmed_fq1, self.trimmed_fq2
@@ -35,16 +41,18 @@ class Cutadapt(Processor):
 
 class CutadaptBase(Processor):
 
-    MINIMUM_OVERLAP = '3'
-    MAXIMUM_ERROR_RATE = '0.1'
-    MINIMUM_LENGTH = '50'
+    MINIMUM_OVERLAP = 3
+    MAXIMUM_ERROR_RATE = 0.1
+    MINIMUM_LENGTH = 20
+
+    adapter: str
+    base_quality_cutoff: int
 
 
 class CutadaptPairedEnd(CutadaptBase):
 
     fq1: str
     fq2: str
-    adapter: str
 
     trimmed_fq1: str
     trimmed_fq2: str
@@ -52,11 +60,13 @@ class CutadaptPairedEnd(CutadaptBase):
     def main(self,
              fq1: str,
              fq2: str,
-             adapter: str) -> Tuple[str, str]:
+             adapter: str,
+             base_quality_cutoff: int) -> Tuple[str, str]:
 
         self.fq1 = fq1
         self.fq2 = fq2
         self.adapter = adapter
+        self.base_quality_cutoff = base_quality_cutoff
 
         self.set_output_paths()
         self.cutadapt()
@@ -75,6 +85,7 @@ class CutadaptPairedEnd(CutadaptBase):
 --overlap {self.MINIMUM_OVERLAP} \\
 --error-rate {self.MAXIMUM_ERROR_RATE} \\
 --minimum-length {self.MINIMUM_LENGTH} \\
+--quality-cutoff {self.base_quality_cutoff} \\
 --output {self.trimmed_fq1} \\
 --paired-output {self.trimmed_fq2} \\
 {self.fq1} \\
@@ -87,16 +98,17 @@ class CutadaptPairedEnd(CutadaptBase):
 class CutadaptSingleEnd(CutadaptBase):
 
     fq: str
-    adapter: str
 
     trimmed_fq: str
 
     def main(self,
              fq: str,
-             adapter: str) -> str:
+             adapter: str,
+             base_quality_cutoff: int) -> str:
 
         self.fq = fq
         self.adapter = adapter
+        self.base_quality_cutoff = base_quality_cutoff
 
         self.set_output_path()
         self.cutadapt()
@@ -113,6 +125,7 @@ class CutadaptSingleEnd(CutadaptBase):
 --overlap {self.MINIMUM_OVERLAP} \\
 --error-rate {self.MAXIMUM_ERROR_RATE} \\
 --minimum-length {self.MINIMUM_LENGTH} \\
+--quality-cutoff {self.base_quality_cutoff} \\
 --output {self.trimmed_fq} \\
 {self.fq} \\
 1> {log} \\

@@ -7,8 +7,8 @@ class TestCutadapt(TestCase):
     def setUp(self):
         self.set_up(py_path=__file__)
 
-    def tearDown(self):
-        self.tear_down()
+    # def tearDown(self):
+    #     self.tear_down()
 
     def test_paired_end(self):
         # https://sapac.support.illumina.com/bulletins/2016/12/what-sequences-do-i-use-for-adapter-trimming.html
@@ -17,16 +17,19 @@ class TestCutadapt(TestCase):
         fq1, fq2 = Cutadapt(self.settings).main(
             fq1=f'{self.indir}/1month-4NQO-3.1.fq.gz',
             fq2=f'{self.indir}/1month-4NQO-3.2.fq.gz',
-            adapter='AGATCGGAAGAGC'
+            adapter='AGATCGGAAGAGC',
+            base_quality_cutoff=20
         )
         self.assertFileExists(f'{self.workdir}/trimmed_1.fq', fq1)
         self.assertFileExists(f'{self.workdir}/trimmed_2.fq', fq2)
 
     def test_single_end(self):
         fq1, fq2 = Cutadapt(self.settings).main(
+            # fq1=f'{self.indir}/1month-4NQO-3.1.fq.gz',
             fq1=f'{self.indir}/1month-4NQO-3.1.fq.gz',
             fq2=None,
-            adapter='AGATCGGAAGAGC'
+            adapter='AGATCGGAAGAGC',
+            base_quality_cutoff=20
         )
         self.assertFileExists(f'{self.workdir}/trimmed.fq', fq1)
 
