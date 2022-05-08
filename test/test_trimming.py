@@ -1,8 +1,8 @@
 from .setup import TestCase
-from rna_seq_pipeline.trimming import FastQC, Cutadapt
+from rna_seq_pipeline.trimming import FastQC, Trimming
 
 
-class TestCutadapt(TestCase):
+class TestTrimming(TestCase):
 
     def setUp(self):
         self.set_up(py_path=__file__)
@@ -14,7 +14,7 @@ class TestCutadapt(TestCase):
         # https://sapac.support.illumina.com/bulletins/2016/12/what-sequences-do-i-use-for-adapter-trimming.html
         # 'AGATCGGAAGAGC' is the 'stem' of the Y-shaped adapter, i.e. the universal adapter sequence
         # read 1 and read 2's adapter sequence should be palindromic, thus fwd and rev should be the same
-        fq1, fq2 = Cutadapt(self.settings).main(
+        fq1, fq2 = Trimming(self.settings).main(
             fq1=f'{self.indir}/1month-4NQO-3.1.fq.gz',
             fq2=f'{self.indir}/1month-4NQO-3.2.fq.gz',
             adapter='AGATCGGAAGAGC',
@@ -24,8 +24,7 @@ class TestCutadapt(TestCase):
         self.assertFileExists(f'{self.workdir}/trimmed_2.fq', fq2)
 
     def test_single_end(self):
-        fq1, fq2 = Cutadapt(self.settings).main(
-            # fq1=f'{self.indir}/1month-4NQO-3.1.fq.gz',
+        fq1, fq2 = Trimming(self.settings).main(
             fq1=f'{self.indir}/1month-4NQO-3.1.fq.gz',
             fq2=None,
             adapter='AGATCGGAAGAGC',

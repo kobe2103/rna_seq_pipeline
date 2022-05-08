@@ -3,7 +3,7 @@ from .mapping import Mapping
 from .clean_up import CleanUp
 from .counting import Counting
 from .template import Processor
-from .trimming import Cutadapt, FastQC
+from .trimming import Trimming, FastQC
 from .copy_ref_files import CopyRefFiles
 
 
@@ -54,7 +54,7 @@ class RNASeqPipeline(Processor):
             ref_fa=self.ref_fa, gtf=self.gtf)
 
     def trimming(self):
-        self.trimmed_fq1, self.trimmed_fq2 = Cutadapt(self.settings).main(
+        self.trimmed_fq1, self.trimmed_fq2 = Trimming(self.settings).main(
             fq1=self.fq1,
             fq2=self.fq2,
             adapter=self.adapter,

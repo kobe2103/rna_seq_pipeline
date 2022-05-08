@@ -49,7 +49,7 @@ OPTIONAL = [
             'type': str,
             'required': False,
             'default': 'AGATCGGAAGAGC',
-            'help': "adapter sequence, 'AGATCGGAAGAGC' is the stem of the Y-shaped adapter (default: %(default)s)",
+            'help': "adapter sequence, default is the stem of the Y-shaped adapter (default: %(default)s)",
         }
     },
     {
@@ -58,7 +58,7 @@ OPTIONAL = [
             'type': int,
             'required': False,
             'default': 20,
-            'help': "base quality cutoff for trimming (default: %(default)s)",
+            'help': 'base quality cutoff for cutadapt trimming (default: %(default)s)',
         }
     },
     {

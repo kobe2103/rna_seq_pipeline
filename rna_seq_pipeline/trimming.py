@@ -2,7 +2,7 @@ from typing import Tuple, Optional
 from .template import Processor
 
 
-class Cutadapt(Processor):
+class Trimming(Processor):
 
     fq1: str
     fq2: Optional[str]
