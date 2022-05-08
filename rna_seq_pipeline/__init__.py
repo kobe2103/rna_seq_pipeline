@@ -13,6 +13,7 @@ class Main:
             fq2: str,
             adapter: str,
             read_aligner: str,
+            base_quality_cutoff: int,
             discard_bam: bool,
             outdir: str,
             threads: str,
@@ -34,6 +35,7 @@ class Main:
             fq2=fq2 if fq2 != 'None' else None,
             adapter=adapter,
             read_aligner=read_aligner,
+            base_quality_cutoff=base_quality_cutoff,
             discard_bam=discard_bam,
             ref_fa=ref_fa,
             gtf=gtf)

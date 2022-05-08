@@ -15,6 +15,7 @@ class RNASeqPipeline(Processor):
     fq2: Optional[str]
     adapter: str
     read_aligner: str
+    base_quality_cutoff: int
     discard_bam: bool
 
     trimmed_fq1: str
@@ -29,6 +30,7 @@ class RNASeqPipeline(Processor):
              fq2: Optional[str],
              adapter: str,
              read_aligner: str,
+             base_quality_cutoff: int,
              discard_bam: bool):
 
         self.ref_fa = ref_fa
@@ -37,6 +39,7 @@ class RNASeqPipeline(Processor):
         self.fq2 = fq2
         self.adapter = adapter
         self.read_aligner = read_aligner
+        self.base_quality_cutoff = base_quality_cutoff
         self.discard_bam = discard_bam
 
         self.copy_ref_files()
@@ -54,7 +57,8 @@ class RNASeqPipeline(Processor):
         self.trimmed_fq1, self.trimmed_fq2 = Cutadapt(self.settings).main(
             fq1=self.fq1,
             fq2=self.fq2,
-            adapter=self.adapter)
+            adapter=self.adapter,
+            base_quality_cutoff=self.base_quality_cutoff)
 
     def fastqc(self):
         FastQC(self.settings).main(

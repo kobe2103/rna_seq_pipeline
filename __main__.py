@@ -49,7 +49,16 @@ OPTIONAL = [
             'type': str,
             'required': False,
             'default': 'AGATCGGAAGAGC',
-            'help': "input your adapter sequence and 'AGATCGGAAGAGC' is the stem of the Y-shaped adapter",
+            'help': "adapter sequence, 'AGATCGGAAGAGC' is the stem of the Y-shaped adapter (default: %(default)s)",
+        }
+    },
+    {
+        'keys': ['--base-quality-cutoff'],
+        'properties': {
+            'type': int,
+            'required': False,
+            'default': 20,
+            'help': "base quality cutoff for trimming (default: %(default)s)",
         }
     },
     {
@@ -149,6 +158,7 @@ class EntryPoint:
             fq2=args.fq2,
             adapter=args.adapter,
             read_aligner=args.read_aligner,
+            base_quality_cutoff=args.base_quality_cutoff,
             discard_bam=args.discard_bam,
             outdir=args.outdir,
             threads=args.threads,
