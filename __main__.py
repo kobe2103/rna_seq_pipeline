@@ -2,7 +2,7 @@ import argparse
 import rna_seq_pipeline
 
 
-__VERSION__ = '1.1.2-beta'
+__VERSION__ = '1.1.2'
 
 
 PROG = 'python rna_seq_pipeline'
