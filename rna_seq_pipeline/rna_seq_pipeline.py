@@ -15,6 +15,7 @@ class RNASeqPipeline(Processor):
     fq2: Optional[str]
     adapter: str
     read_aligner: str
+    bowtie2_mode: str
     base_quality_cutoff: int
     discard_bam: bool
 
@@ -30,6 +31,7 @@ class RNASeqPipeline(Processor):
              fq2: Optional[str],
              adapter: str,
              read_aligner: str,
+             bowtie2_mode: str,
              base_quality_cutoff: int,
              discard_bam: bool):
 
@@ -39,6 +41,7 @@ class RNASeqPipeline(Processor):
         self.fq2 = fq2
         self.adapter = adapter
         self.read_aligner = read_aligner
+        self.bowtie2_mode = bowtie2_mode
         self.base_quality_cutoff = base_quality_cutoff
         self.discard_bam = discard_bam
 
@@ -72,6 +75,7 @@ class RNASeqPipeline(Processor):
             fq1=self.trimmed_fq1,
             fq2=self.trimmed_fq2,
             read_aligner=self.read_aligner,
+            bowtie2_mode=self.bowtie2_mode,
             discard_bam=self.discard_bam)
 
     def counting(self):

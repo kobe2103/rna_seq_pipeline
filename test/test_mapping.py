@@ -17,6 +17,7 @@ class TestMapping(TestCase):
             fq1=f'{self.indir}/trimmed_1.fq',
             fq2=f'{self.indir}/trimmed_2.fq',
             read_aligner='STAR',
+            bowtie2_mode='sensitive',
             discard_bam=True
         )
         expected = f'{self.workdir}/sorted.bam'
@@ -29,6 +30,7 @@ class TestMapping(TestCase):
             fq1=f'{self.indir}/trimmed_1.fq',
             fq2=None,
             read_aligner='STAR',
+            bowtie2_mode='sensitive',
             discard_bam=True
         )
         expected = f'{self.workdir}/sorted.bam'
@@ -47,14 +49,16 @@ class TestBowtie2(TestCase):
         Bowtie2(self.settings).main(
             ref_fa=f'{self.indir}/21_0501_subset_mouse_genome.fa',
             fq1=f'{self.indir}/trimmed_1.fq',
-            fq2=f'{self.indir}/trimmed_2.fq'
+            fq2=f'{self.indir}/trimmed_2.fq',
+            mode='very-fast-local'
         )
 
     def test_single_end(self):
         Bowtie2(self.settings).main(
             ref_fa=f'{self.indir}/21_0501_subset_mouse_genome.fa',
             fq1=f'{self.indir}/trimmed_1.fq',
-            fq2=None
+            fq2=None,
+            mode='very-fast-local'
         )
 
 

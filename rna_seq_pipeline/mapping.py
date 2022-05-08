@@ -11,6 +11,7 @@ class Mapping(Processor):
     fq1: str
     fq2: Optional[str]
     read_aligner: str
+    bowtie2_mode: str
     discard_bam: bool
 
     sorted_bam: str
@@ -22,6 +23,7 @@ class Mapping(Processor):
             fq1: str,
             fq2: Optional[str],
             read_aligner: str,
+            bowtie2_mode: str,
             discard_bam: bool) -> str:
 
         self.ref_fa = ref_fa
@@ -29,6 +31,7 @@ class Mapping(Processor):
         self.fq1 = fq1
         self.fq2 = fq2
         self.read_aligner = read_aligner.lower()
+        self.bowtie2_mode = bowtie2_mode.lower()
         self.discard_bam = discard_bam
 
         assert self.read_aligner in ['star', 'bowtie2']
@@ -54,7 +57,8 @@ class Mapping(Processor):
         self.sorted_bam = Bowtie2(self.settings).main(
             ref_fa=self.ref_fa,
             fq1=self.fq1,
-            fq2=self.fq2)
+            fq2=self.fq2,
+            mode=self.bowtie2_mode)
 
     def mapping_stats(self):
         txt = f'{self.outdir}/mapping-stats.txt'
@@ -72,6 +76,7 @@ class Bowtie2(Processor):
     ref_fa: str
     fq1: str
     fq2: Optional[str]
+    mode: str
 
     idx: str
     sam: str
@@ -82,11 +87,13 @@ class Bowtie2(Processor):
             self,
             ref_fa: str,
             fq1: str,
-            fq2: Optional[str]) -> str:
+            fq2: Optional[str],
+            mode: str) -> str:
 
         self.ref_fa = ref_fa
         self.fq1 = fq1
         self.fq2 = fq2
+        self.mode = mode
 
         self.indexing()
         if self.fq2 is None:
@@ -110,6 +117,8 @@ class Bowtie2(Processor):
 -x {self.idx} \\
 -U {self.fq1} \\
 -S {self.sam} \\
+--{self.mode} \\
+--threads {self.threads} \\
 1> {log} \\
 2> {log}'''
         self.call(cmd)
@@ -122,6 +131,8 @@ class Bowtie2(Processor):
 -1 {self.fq1} \\
 -2 {self.fq2} \\
 -S {self.sam} \\
+--{self.mode} \\
+--threads {self.threads} \\
 1> {log} \\
 2> {log}'''
         self.call(cmd)

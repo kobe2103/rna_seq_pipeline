@@ -2,7 +2,7 @@ import argparse
 import rna_seq_pipeline
 
 
-__VERSION__ = '1.1.1'
+__VERSION__ = '1.1.2-beta'
 
 
 PROG = 'python rna_seq_pipeline'
@@ -71,6 +71,27 @@ OPTIONAL = [
             'help': 'read aligner (default: %(default)s)',
         }
     },
+
+    {
+        'keys': ['--bowtie2-mode'],
+        'properties': {
+            'type': str,
+            'required': False,
+            'choices': [
+                'very-fast',
+                'very-fast-local',
+                'fast',
+                'fast-local',
+                'sensitive',
+                'sensitive-local',
+                'very-sensitive',
+                'very-sensitive-local'
+            ],
+            'default': 'sensitive',
+            'help': 'bowtie2 preset mode (default: %(default)s)',
+        }
+    },
+
     {
         'keys': ['--discard-bam'],
         'properties': {
@@ -158,6 +179,7 @@ class EntryPoint:
             fq2=args.fq2,
             adapter=args.adapter,
             read_aligner=args.read_aligner,
+            bowtie2_mode=args.bowtie2_mode,
             base_quality_cutoff=args.base_quality_cutoff,
             discard_bam=args.discard_bam,
             outdir=args.outdir,

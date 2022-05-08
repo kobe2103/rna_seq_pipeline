@@ -17,7 +17,8 @@ class TestRNASeqPipeline(TestCase):
             fq1=f'{self.indir}/1month-4NQO-3.1.fq.gz',
             fq2=f'{self.indir}/1month-4NQO-3.2.fq.gz',
             adapter='AGATCGGAAGAGC',
-            read_aligner='star',
+            read_aligner='bowtie2',
+            bowtie2_mode='sensitive',
             base_quality_cutoff=20,
             discard_bam=False
         )
