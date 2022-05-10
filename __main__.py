@@ -2,7 +2,7 @@ import argparse
 import rna_seq_pipeline
 
 
-__VERSION__ = '1.1.2'
+__VERSION__ = '1.1.3-beta'
 
 
 PROG = 'python rna_seq_pipeline'
@@ -62,6 +62,15 @@ OPTIONAL = [
         }
     },
     {
+        'keys': ['--min-read-length'],
+        'properties': {
+            'type': int,
+            'required': False,
+            'default': 20,
+            'help': 'mininum read length after trimming (default: %(default)s)',
+        }
+    },
+    {
         'keys': ['--read-aligner'],
         'properties': {
             'type': str,
@@ -71,7 +80,6 @@ OPTIONAL = [
             'help': 'read aligner (default: %(default)s)',
         }
     },
-
     {
         'keys': ['--bowtie2-mode'],
         'properties': {
@@ -91,12 +99,40 @@ OPTIONAL = [
             'help': 'bowtie2 preset mode (default: %(default)s)',
         }
     },
-
     {
         'keys': ['--discard-bam'],
         'properties': {
             'action': 'store_true',
             'help': 'do not save sorted BAM files in outdir',
+        }
+    },
+    {
+        'keys': ['--min-count-mapq'],
+        'properties': {
+            'type': int,
+            'required': False,
+            'default': 10,
+            'help': 'min mapping quality (MAPQ) for counting (default: %(default)s)',
+        }
+    },
+    {
+        'keys': ['--nonunique-count'],
+        'properties': {
+            'type': str,
+            'required': False,
+            'choices': ['none', 'all', 'fraction', 'random'],
+            'default': 'none',
+            'help': 'how to count for non-uniquely mapped reads (default: %(default)s)',
+        }
+    },
+    {
+        'keys': ['--stranded-count'],
+        'properties': {
+            'type': str,
+            'required': False,
+            'choices': ['yes', 'no', 'reverse'],
+            'default': 'yes',
+            'help': 'strand-specfic counting (default: %(default)s)',
         }
     },
     {
@@ -178,10 +214,14 @@ class EntryPoint:
             fq1=args.fq1,
             fq2=args.fq2,
             adapter=args.adapter,
+            base_quality_cutoff=args.base_quality_cutoff,
+            min_read_length=args.min_read_length,
             read_aligner=args.read_aligner,
             bowtie2_mode=args.bowtie2_mode,
-            base_quality_cutoff=args.base_quality_cutoff,
             discard_bam=args.discard_bam,
+            min_count_mapq=args.min_count_mapq,
+            nonunique_count=args.nonunique_count,
+            stranded_count=args.stranded_count,
             outdir=args.outdir,
             threads=args.threads,
             debug=args.debug)
