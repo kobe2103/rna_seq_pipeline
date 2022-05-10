@@ -14,10 +14,14 @@ class RNASeqPipeline(Processor):
     fq1: str
     fq2: Optional[str]
     adapter: str
+    base_quality_cutoff: int
+    min_read_length: int
     read_aligner: str
     bowtie2_mode: str
-    base_quality_cutoff: int
     discard_bam: bool
+    min_count_mapq: int
+    nonunique_count: str
+    stranded_count: str
 
     trimmed_fq1: str
     trimmed_fq2: Optional[str]
@@ -30,20 +34,28 @@ class RNASeqPipeline(Processor):
              fq1: str,
              fq2: Optional[str],
              adapter: str,
+             base_quality_cutoff: int,
+             min_read_length: int,
              read_aligner: str,
              bowtie2_mode: str,
-             base_quality_cutoff: int,
-             discard_bam: bool):
+             discard_bam: bool,
+             min_count_mapq: int,
+             nonunique_count: str,
+             stranded_count: str):
 
         self.ref_fa = ref_fa
         self.gtf = gtf
         self.fq1 = fq1
         self.fq2 = fq2
         self.adapter = adapter
+        self.base_quality_cutoff = base_quality_cutoff
+        self.min_read_length = min_read_length
         self.read_aligner = read_aligner
         self.bowtie2_mode = bowtie2_mode
-        self.base_quality_cutoff = base_quality_cutoff
         self.discard_bam = discard_bam
+        self.min_count_mapq = min_count_mapq
+        self.nonunique_count = nonunique_count
+        self.stranded_count = stranded_count
 
         self.copy_ref_files()
         self.trimming()
@@ -61,7 +73,8 @@ class RNASeqPipeline(Processor):
             fq1=self.fq1,
             fq2=self.fq2,
             adapter=self.adapter,
-            base_quality_cutoff=self.base_quality_cutoff)
+            base_quality_cutoff=self.base_quality_cutoff,
+            min_read_length=self.min_read_length)
 
     def fastqc(self):
         FastQC(self.settings).main(
@@ -81,7 +94,11 @@ class RNASeqPipeline(Processor):
     def counting(self):
         self.count_csv = Counting(self.settings).main(
             sorted_bam=self.sorted_bam,
-            gtf=self.gtf)
+            gtf=self.gtf,
+            min_count_mapq=self.min_count_mapq,
+            nonunique_count=self.nonunique_count,
+            stranded_count=self.stranded_count,
+        )
 
     def clean_up(self):
         CleanUp(self.settings).main()

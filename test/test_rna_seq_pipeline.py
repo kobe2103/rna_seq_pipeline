@@ -17,8 +17,12 @@ class TestRNASeqPipeline(TestCase):
             fq1=f'{self.indir}/1month-4NQO-3.1.fq.gz',
             fq2=f'{self.indir}/1month-4NQO-3.2.fq.gz',
             adapter='AGATCGGAAGAGC',
+            base_quality_cutoff=20,
+            min_read_length=20,
             read_aligner='bowtie2',
             bowtie2_mode='sensitive',
-            base_quality_cutoff=20,
-            discard_bam=False
+            discard_bam=False,
+            min_count_mapq=10,
+            nonunique_count='none',
+            stranded_count='yes'
         )

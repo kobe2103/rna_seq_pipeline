@@ -14,6 +14,9 @@ class TestCounting(TestCase):
         actual = Counting(self.settings).main(
             sorted_bam=f'{self.indir}/sorted.bam',
             gtf=f'{self.indir}/21_0501_subset_mouse_genome.gtf',
+            min_count_mapq=10,
+            nonunique_count='all',
+            stranded_count='yes',
         )
         expected = f'{self.indir}/counts.csv'
         self.assertFileEqual(expected, actual)
@@ -31,7 +34,10 @@ class TestHTSeqCount(TestCase):
         actual = HTSeqCount(self.settings).main(
             sorted_bam=f'{self.indir}/sorted.bam',
             gtf=f'{self.indir}/21_0501_subset_mouse_genome.gtf',
-            feature_type='exon',
+            min_count_mapq=10,
+            nonunique_count='none',
+            stranded_count='yes',
+            feature_type='exon'
         )
         expected = f'{self.workdir}/htseq-count-exon.txt'
         self.assertFileExists(expected, actual)

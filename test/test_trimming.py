@@ -18,7 +18,8 @@ class TestTrimming(TestCase):
             fq1=f'{self.indir}/1month-4NQO-3.1.fq.gz',
             fq2=f'{self.indir}/1month-4NQO-3.2.fq.gz',
             adapter='AGATCGGAAGAGC',
-            base_quality_cutoff=20
+            base_quality_cutoff=20,
+            min_read_length=20,
         )
         self.assertFileExists(f'{self.workdir}/trimmed_1.fq', fq1)
         self.assertFileExists(f'{self.workdir}/trimmed_2.fq', fq2)
@@ -28,7 +29,8 @@ class TestTrimming(TestCase):
             fq1=f'{self.indir}/1month-4NQO-3.1.fq.gz',
             fq2=None,
             adapter='AGATCGGAAGAGC',
-            base_quality_cutoff=20
+            base_quality_cutoff=20,
+            min_read_length=20,
         )
         self.assertFileExists(f'{self.workdir}/trimmed.fq', fq1)
 

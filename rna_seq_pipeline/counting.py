@@ -12,6 +12,9 @@ class Counting(Processor):
 
     sorted_bam: str
     gtf: str
+    min_count_mapq: int
+    nonunique_count: str
+    stranded_count: str
 
     feature_type_to_count_txt: Dict[str, str]
     count_csv: str
@@ -19,10 +22,16 @@ class Counting(Processor):
 
     def main(self,
              sorted_bam: str,
-             gtf: str) -> str:
+             gtf: str,
+             min_count_mapq: int,
+             nonunique_count: str,
+             stranded_count: str) -> str:
 
         self.sorted_bam = sorted_bam
         self.gtf = gtf
+        self.min_count_mapq = min_count_mapq
+        self.nonunique_count = nonunique_count
+        self.stranded_count = stranded_count
 
         self.index_bam()
         self.count_feature_types()
@@ -44,7 +53,10 @@ class Counting(Processor):
         return HTSeqCount(self.settings).main(
             sorted_bam=self.sorted_bam,
             gtf=self.gtf,
-            feature_type=feature_type)
+            min_count_mapq=self.min_count_mapq,
+            nonunique_count=self.nonunique_count,
+            stranded_count=self.stranded_count,
+            feature_type=feature_type,)
 
     def write_count_tsv(self):
         self.count_csv = WriteCountCsv(self.settings).main(
@@ -57,13 +69,14 @@ class Counting(Processor):
 
 class HTSeqCount(Processor):
 
-    STANDARD_SPECIFIC_ASSAY = 'yes'
-    SKIP_LOWER_QUALITY_READ = '10'
     MODE_TO_HANDLE_READ_OVERLAPPING = 'union'
     ID_ATTRIBUTE = 'gene_id'
 
     sorted_bam: str
     gtf: str
+    min_count_mapq: int
+    nonunique_count: str
+    stranded_count: str
     feature_type: str
 
     output_txt: str
@@ -71,10 +84,16 @@ class HTSeqCount(Processor):
     def main(self,
              sorted_bam: str,
              gtf: str,
+             min_count_mapq: int,
+             nonunique_count: str,
+             stranded_count: str,
              feature_type: str) -> str:
 
         self.sorted_bam = sorted_bam
         self.gtf = gtf
+        self.min_count_mapq = min_count_mapq
+        self.nonunique_count = nonunique_count
+        self.stranded_count = stranded_count
         self.feature_type = feature_type
 
         self.execute()
@@ -87,12 +106,12 @@ class HTSeqCount(Processor):
         cmd = f'''htseq-count \\
 --format bam \\
 --order name \\
---stranded {self.STANDARD_SPECIFIC_ASSAY} \\
--a {self.SKIP_LOWER_QUALITY_READ} \\
+--stranded {self.stranded_count} \\
+-a {self.min_count_mapq} \\
 --type {self.feature_type} \\
 --idattr {self.ID_ATTRIBUTE} \\
 --mode {self.MODE_TO_HANDLE_READ_OVERLAPPING} \\
---nonunique all \\
+--nonunique {self.nonunique_count} \\
 {self.sorted_bam} \\
 {self.gtf} \\
 1> {self.output_txt} \\

@@ -8,6 +8,7 @@ class Trimming(Processor):
     fq2: Optional[str]
     adapter: str
     base_quality_cutoff: int
+    min_read_length: int
 
     trimmed_fq1: str
     trimmed_fq2: Optional[str]
@@ -16,24 +17,28 @@ class Trimming(Processor):
              fq1: str,
              fq2: Optional[str],
              adapter: str,
-             base_quality_cutoff: int) -> Tuple[str, Optional[str]]:
+             base_quality_cutoff: int,
+             min_read_length: int) -> Tuple[str, Optional[str]]:
 
         self.fq1 = fq1
         self.fq2 = fq2
         self.adapter = adapter
         self.base_quality_cutoff = base_quality_cutoff
+        self.min_read_length = min_read_length
 
         if self.fq2 is not None:
             self.trimmed_fq1, self.trimmed_fq2 = CutadaptPairedEnd(self.settings).main(
                 fq1=self.fq1,
                 fq2=self.fq2,
                 adapter=self.adapter,
-                base_quality_cutoff=self.base_quality_cutoff)
+                base_quality_cutoff=self.base_quality_cutoff,
+                min_read_length=self.min_read_length)
         else:
             self.trimmed_fq1 = CutadaptSingleEnd(self.settings).main(
                 fq=self.fq1,
                 adapter=self.adapter,
-                base_quality_cutoff=self.base_quality_cutoff)
+                base_quality_cutoff=self.base_quality_cutoff,
+                min_read_length=self.min_read_length)
             self.trimmed_fq2 = None
 
         return self.trimmed_fq1, self.trimmed_fq2
@@ -43,10 +48,10 @@ class CutadaptBase(Processor):
 
     MINIMUM_OVERLAP = 3
     MAXIMUM_ERROR_RATE = 0.1
-    MINIMUM_LENGTH = 20
 
     adapter: str
     base_quality_cutoff: int
+    min_read_length: int
 
 
 class CutadaptPairedEnd(CutadaptBase):
@@ -61,12 +66,14 @@ class CutadaptPairedEnd(CutadaptBase):
              fq1: str,
              fq2: str,
              adapter: str,
-             base_quality_cutoff: int) -> Tuple[str, str]:
+             base_quality_cutoff: int,
+             min_read_length: int) -> Tuple[str, str]:
 
         self.fq1 = fq1
         self.fq2 = fq2
         self.adapter = adapter
         self.base_quality_cutoff = base_quality_cutoff
+        self.min_read_length = min_read_length
 
         self.set_output_paths()
         self.cutadapt()
@@ -84,7 +91,7 @@ class CutadaptPairedEnd(CutadaptBase):
 -A {self.adapter} \\
 --overlap {self.MINIMUM_OVERLAP} \\
 --error-rate {self.MAXIMUM_ERROR_RATE} \\
---minimum-length {self.MINIMUM_LENGTH} \\
+--minimum-length {self.min_read_length} \\
 --quality-cutoff {self.base_quality_cutoff} \\
 --output {self.trimmed_fq1} \\
 --paired-output {self.trimmed_fq2} \\
@@ -104,11 +111,13 @@ class CutadaptSingleEnd(CutadaptBase):
     def main(self,
              fq: str,
              adapter: str,
-             base_quality_cutoff: int) -> str:
+             base_quality_cutoff: int,
+             min_read_length: int) -> str:
 
         self.fq = fq
         self.adapter = adapter
         self.base_quality_cutoff = base_quality_cutoff
+        self.min_read_length = min_read_length
 
         self.set_output_path()
         self.cutadapt()
@@ -124,7 +133,7 @@ class CutadaptSingleEnd(CutadaptBase):
 --adapter {self.adapter} \\
 --overlap {self.MINIMUM_OVERLAP} \\
 --error-rate {self.MAXIMUM_ERROR_RATE} \\
---minimum-length {self.MINIMUM_LENGTH} \\
+--minimum-length {self.min_read_length} \\
 --quality-cutoff {self.base_quality_cutoff} \\
 --output {self.trimmed_fq} \\
 {self.fq} \\

@@ -21,7 +21,7 @@ class Main:
             nonunique_count: str,
             stranded_count: str,
             outdir: str,
-            threads: str,
+            threads: int,
             debug: bool):
 
         workdir = 'rna_seq_pipeline_workdir'
@@ -29,7 +29,7 @@ class Main:
         settings = Settings(
             workdir=workdir,
             outdir=outdir,
-            threads=int(threads),
+            threads=threads,
             debug=debug)
 
         for d in [settings.workdir, settings.outdir]:
@@ -37,11 +37,15 @@ class Main:
 
         RNASeqPipeline(settings).main(
             fq1=fq1,
-            fq2=fq2 if fq2 != 'None' else None,
+            fq2=None if fq2.lower() == 'none' else fq2,
             adapter=adapter,
+            base_quality_cutoff=base_quality_cutoff,
+            min_read_length=min_read_length,
             read_aligner=read_aligner,
             bowtie2_mode=bowtie2_mode,
-            base_quality_cutoff=base_quality_cutoff,
             discard_bam=discard_bam,
+            min_count_mapq=min_count_mapq,
+            nonunique_count=nonunique_count,
+            stranded_count=stranded_count,
             ref_fa=ref_fa,
             gtf=gtf)
