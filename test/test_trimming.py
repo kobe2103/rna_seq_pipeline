@@ -20,6 +20,7 @@ class TestTrimming(TestCase):
             adapter='AGATCGGAAGAGC',
             base_quality_cutoff=20,
             min_read_length=20,
+            max_read_length=None
         )
         self.assertFileExists(f'{self.workdir}/trimmed_1.fq', fq1)
         self.assertFileExists(f'{self.workdir}/trimmed_2.fq', fq2)
@@ -31,6 +32,7 @@ class TestTrimming(TestCase):
             adapter='AGATCGGAAGAGC',
             base_quality_cutoff=20,
             min_read_length=20,
+            max_read_length=100
         )
         self.assertFileExists(f'{self.workdir}/trimmed.fq', fq1)
 

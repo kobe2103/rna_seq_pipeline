@@ -2,7 +2,7 @@ import argparse
 import rna_seq_pipeline
 
 
-__VERSION__ = '1.1.3'
+__VERSION__ = '1.1.4-beta'
 
 
 PROG = 'python rna_seq_pipeline'
@@ -67,7 +67,16 @@ OPTIONAL = [
             'type': int,
             'required': False,
             'default': 20,
-            'help': 'mininum read length after trimming (default: %(default)s)',
+            'help': 'minimum read length after trimming (default: %(default)s)',
+        }
+    },
+    {
+        'keys': ['--max-read-length'],
+        'properties': {
+            'type': int,
+            'required': False,
+            'default': -1,
+            'help': 'maximum read length after trimming, defualt for no limit (default: %(default)s)',
         }
     },
     {
@@ -216,6 +225,7 @@ class EntryPoint:
             adapter=args.adapter,
             base_quality_cutoff=args.base_quality_cutoff,
             min_read_length=args.min_read_length,
+            max_read_length=args.max_read_length,
             read_aligner=args.read_aligner,
             bowtie2_mode=args.bowtie2_mode,
             discard_bam=args.discard_bam,

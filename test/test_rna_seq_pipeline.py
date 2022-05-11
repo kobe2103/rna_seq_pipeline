@@ -19,6 +19,7 @@ class TestRNASeqPipeline(TestCase):
             adapter='AGATCGGAAGAGC',
             base_quality_cutoff=20,
             min_read_length=20,
+            max_read_length=None,
             read_aligner='bowtie2',
             bowtie2_mode='sensitive',
             discard_bam=False,

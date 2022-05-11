@@ -9,6 +9,7 @@ class Trimming(Processor):
     adapter: str
     base_quality_cutoff: int
     min_read_length: int
+    max_read_length: Optional[int]
 
     trimmed_fq1: str
     trimmed_fq2: Optional[str]
@@ -18,13 +19,15 @@ class Trimming(Processor):
              fq2: Optional[str],
              adapter: str,
              base_quality_cutoff: int,
-             min_read_length: int) -> Tuple[str, Optional[str]]:
+             min_read_length: int,
+             max_read_length: Optional[int]) -> Tuple[str, Optional[str]]:
 
         self.fq1 = fq1
         self.fq2 = fq2
         self.adapter = adapter
         self.base_quality_cutoff = base_quality_cutoff
         self.min_read_length = min_read_length
+        self.max_read_length = max_read_length
 
         if self.fq2 is not None:
             self.trimmed_fq1, self.trimmed_fq2 = CutadaptPairedEnd(self.settings).main(
@@ -32,13 +35,15 @@ class Trimming(Processor):
                 fq2=self.fq2,
                 adapter=self.adapter,
                 base_quality_cutoff=self.base_quality_cutoff,
-                min_read_length=self.min_read_length)
+                min_read_length=self.min_read_length,
+                max_read_length=self.max_read_length)
         else:
             self.trimmed_fq1 = CutadaptSingleEnd(self.settings).main(
                 fq=self.fq1,
                 adapter=self.adapter,
                 base_quality_cutoff=self.base_quality_cutoff,
-                min_read_length=self.min_read_length)
+                min_read_length=self.min_read_length,
+                max_read_length=self.max_read_length)
             self.trimmed_fq2 = None
 
         return self.trimmed_fq1, self.trimmed_fq2
@@ -52,6 +57,7 @@ class CutadaptBase(Processor):
     adapter: str
     base_quality_cutoff: int
     min_read_length: int
+    max_read_length: Optional[int]
 
 
 class CutadaptPairedEnd(CutadaptBase):
@@ -67,13 +73,15 @@ class CutadaptPairedEnd(CutadaptBase):
              fq2: str,
              adapter: str,
              base_quality_cutoff: int,
-             min_read_length: int) -> Tuple[str, str]:
+             min_read_length: int,
+             max_read_length: Optional[int]) -> Tuple[str, str]:
 
         self.fq1 = fq1
         self.fq2 = fq2
         self.adapter = adapter
         self.base_quality_cutoff = base_quality_cutoff
         self.min_read_length = min_read_length
+        self.max_read_length = max_read_length
 
         self.set_output_paths()
         self.cutadapt()
@@ -85,20 +93,27 @@ class CutadaptPairedEnd(CutadaptBase):
         self.trimmed_fq2 = f'{self.workdir}/trimmed_2.fq'
 
     def cutadapt(self):
+        lines = [
+            'cutadapt',
+            f'--adapter {self.adapter}',
+            f'-A {self.adapter}',
+            f'--overlap {self.MINIMUM_OVERLAP}',
+            f'--error-rate {self.MAXIMUM_ERROR_RATE}',
+            f'--quality-cutoff {self.base_quality_cutoff}',
+            f'--output {self.trimmed_fq1}',
+            f'--paired-output {self.trimmed_fq2}',
+            f'--minimum-length {self.min_read_length}',
+        ]
+        if self.max_read_length is not None:
+            lines.append(f'--maximum-length {self.max_read_length}')
         log = f'{self.outdir}/cutadapt.log'
-        cmd = f'''cutadapt \\
---adapter {self.adapter} \\
--A {self.adapter} \\
---overlap {self.MINIMUM_OVERLAP} \\
---error-rate {self.MAXIMUM_ERROR_RATE} \\
---minimum-length {self.min_read_length} \\
---quality-cutoff {self.base_quality_cutoff} \\
---output {self.trimmed_fq1} \\
---paired-output {self.trimmed_fq2} \\
-{self.fq1} \\
-{self.fq2} \\
-1> {log} \\
-2> {log}'''
+        lines += [
+            self.fq1,
+            self.fq2,
+            f'1> {log}',
+            f'2> {log}',
+        ]
+        cmd = self.CMD_LINEBREAK.join(lines)
         self.call(cmd)
 
 
@@ -112,12 +127,14 @@ class CutadaptSingleEnd(CutadaptBase):
              fq: str,
              adapter: str,
              base_quality_cutoff: int,
-             min_read_length: int) -> str:
+             min_read_length: int,
+             max_read_length: Optional[int]) -> str:
 
         self.fq = fq
         self.adapter = adapter
         self.base_quality_cutoff = base_quality_cutoff
         self.min_read_length = min_read_length
+        self.max_read_length = max_read_length
 
         self.set_output_path()
         self.cutadapt()
@@ -128,17 +145,24 @@ class CutadaptSingleEnd(CutadaptBase):
         self.trimmed_fq = f'{self.workdir}/trimmed.fq'
 
     def cutadapt(self):
+        lines = [
+            'cutadapt',
+            f'--adapter {self.adapter}',
+            f'--overlap {self.MINIMUM_OVERLAP}',
+            f'--error-rate {self.MAXIMUM_ERROR_RATE}',
+            f'--quality-cutoff {self.base_quality_cutoff}',
+            f'--output {self.trimmed_fq}',
+            f'--minimum-length {self.min_read_length}',
+        ]
+        if self.max_read_length is not None:
+            lines.append(f'--maximum-length {self.max_read_length}')
         log = f'{self.outdir}/cutadapt.log'
-        cmd = f'''cutadapt \\
---adapter {self.adapter} \\
---overlap {self.MINIMUM_OVERLAP} \\
---error-rate {self.MAXIMUM_ERROR_RATE} \\
---minimum-length {self.min_read_length} \\
---quality-cutoff {self.base_quality_cutoff} \\
---output {self.trimmed_fq} \\
-{self.fq} \\
-1> {log} \\
-2> {log}'''
+        lines += [
+            self.fq,
+            f'1> {log}',
+            f'2> {log}',
+        ]
+        cmd = self.CMD_LINEBREAK.join(lines)
         self.call(cmd)
 
 

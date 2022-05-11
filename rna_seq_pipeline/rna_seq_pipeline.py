@@ -16,6 +16,7 @@ class RNASeqPipeline(Processor):
     adapter: str
     base_quality_cutoff: int
     min_read_length: int
+    max_read_length: Optional[int]
     read_aligner: str
     bowtie2_mode: str
     discard_bam: bool
@@ -36,6 +37,7 @@ class RNASeqPipeline(Processor):
              adapter: str,
              base_quality_cutoff: int,
              min_read_length: int,
+             max_read_length: Optional[int],
              read_aligner: str,
              bowtie2_mode: str,
              discard_bam: bool,
@@ -50,6 +52,7 @@ class RNASeqPipeline(Processor):
         self.adapter = adapter
         self.base_quality_cutoff = base_quality_cutoff
         self.min_read_length = min_read_length
+        self.max_read_length = max_read_length
         self.read_aligner = read_aligner
         self.bowtie2_mode = bowtie2_mode
         self.discard_bam = discard_bam
@@ -74,7 +77,8 @@ class RNASeqPipeline(Processor):
             fq2=self.fq2,
             adapter=self.adapter,
             base_quality_cutoff=self.base_quality_cutoff,
-            min_read_length=self.min_read_length)
+            min_read_length=self.min_read_length,
+            max_read_length=self.max_read_length)
 
     def fastqc(self):
         FastQC(self.settings).main(

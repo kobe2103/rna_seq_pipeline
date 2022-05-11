@@ -48,6 +48,8 @@ class Logger:
 
 class Processor:
 
+    CMD_LINEBREAK = ' \\\n'
+
     workdir: str
     outdir: str
     threads: int
