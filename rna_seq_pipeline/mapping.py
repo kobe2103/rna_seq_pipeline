@@ -1,7 +1,7 @@
 import os
 from math import log2
-from typing import Optional, List
 from os.path import basename
+from typing import Optional, List
 from .template import Processor
 
 
@@ -256,9 +256,10 @@ class StarGenomeGenerate(Processor):
 
     def init_cmd_lines(self):
         self.lines = [
-            f'STAR',
-            f'--runThreadN {self.threads}',
+            'STAR',
             '--runMode genomeGenerate',
+            f'--runThreadN {self.threads}',
+            f'--outFileNamePrefix {self.workdir}/STAR-genomeGenerate',
             f'--genomeDir {self.genome_dir}',
             f'--genomeFastaFiles {self.ref_fa}',
             f'--sjdbGTFfile {self.gtf}',
@@ -266,13 +267,13 @@ class StarGenomeGenerate(Processor):
         ]
 
     def adjust_for_small_genome(self):
-        genome_length = self.get_genome_length()
+        genome_length = self.__get_genome_length()
         v = int(log2(genome_length) / 2 - 1)
         if v < 14:
             self.logger.info(f'Adjust for small genome ({genome_length} bp), set --genomeSAindexNbases {v}')
             self.lines.append(f'--genomeSAindexNbases {v}')
 
-    def get_genome_length(self) -> int:
+    def __get_genome_length(self) -> int:
         length = 0
         with open(self.ref_fa) as fh:
             for line in fh:
@@ -283,10 +284,7 @@ class StarGenomeGenerate(Processor):
 
     def add_log_lines(self):
         log = f'{self.outdir}/STAR-genomeGenerate.log'
-        self.lines += [
-            f'1> {log}',
-            f'2> {log}'
-        ]
+        self.lines += [f'1> {log}', f'2> {log}']
 
     def execute(self):
         cmd = self.CMD_LINEBREAK.join(self.lines)
