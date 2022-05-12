@@ -1,5 +1,6 @@
 import os
-from typing import Optional
+from math import log2
+from typing import Optional, List
 from os.path import basename
 from .template import Processor
 
@@ -150,7 +151,6 @@ class Star(Processor):
 
     MAPPING_OUT_SUFFIX = 'Aligned.sortedByCoord.out.bam'  # given by STAR
     OUT_SAM_TYPE = 'BAM SortedByCoordinate'
-    LENGTH_OF_DONOR_SEQUENCE = '100'
     SAM_ATTRIBUTES = 'Standard'
 
     ref_fa: str
@@ -184,20 +184,9 @@ class Star(Processor):
         return self.sorted_bam
 
     def indexing(self):
-        self.genome_dir = f'{self.workdir}/genomeDir'
-        os.makedirs(self.genome_dir, exist_ok=True)
-        log = f'{self.outdir}/STAR-genomeGenerate.log'
-        cmd = f'''STAR \\
---runThreadN {self.threads} \\
---runMode genomeGenerate \\
---genomeDir {self.genome_dir} \\
---genomeFastaFiles {self.ref_fa} \\
---sjdbGTFfile {self.gtf} \\
---sjdbOverhang {self.LENGTH_OF_DONOR_SEQUENCE} \\
---outFileNamePrefix {self.workdir}/STAR \\
-1> {log} \\
-2> {log}'''
-        self.call(cmd)
+        self.genome_dir = StarGenomeGenerate(self.settings).main(
+            ref_fa=self.ref_fa,
+            gtf=self.gtf)
 
     def single_end_mapping(self):
         self.__set_mapping_out_prefix()
@@ -236,3 +225,69 @@ class Star(Processor):
         src = f'{self.mapping_out_prefix}{self.MAPPING_OUT_SUFFIX}'
         self.sorted_bam = f'{self.outdir}/sorted.bam'
         self.call(f'mv {src} {self.sorted_bam}')
+
+
+class StarGenomeGenerate(Processor):
+
+    LENGTH_OF_DONOR_SEQUENCE = '100'
+
+    ref_fa: str
+    gtf: str
+
+    genome_dir: str
+    lines: List[str]
+
+    def main(self, ref_fa: str, gtf: str) -> str:
+
+        self.ref_fa = ref_fa
+        self.gtf = gtf
+
+        self.make_genome_dir()
+        self.init_cmd_lines()
+        self.adjust_for_small_genome()
+        self.add_log_lines()
+        self.execute()
+
+        return self.genome_dir
+
+    def make_genome_dir(self):
+        self.genome_dir = f'{self.workdir}/genomeDir'
+        os.makedirs(self.genome_dir, exist_ok=True)
+
+    def init_cmd_lines(self):
+        self.lines = [
+            f'STAR',
+            f'--runThreadN {self.threads}',
+            '--runMode genomeGenerate',
+            f'--genomeDir {self.genome_dir}',
+            f'--genomeFastaFiles {self.ref_fa}',
+            f'--sjdbGTFfile {self.gtf}',
+            f'--sjdbOverhang {self.LENGTH_OF_DONOR_SEQUENCE}',
+        ]
+
+    def adjust_for_small_genome(self):
+        genome_length = self.get_genome_length()
+        v = int(log2(genome_length) / 2 - 1)
+        if v < 14:
+            self.logger.info(f'Adjust for small genome ({genome_length} bp), set --genomeSAindexNbases {v}')
+            self.lines.append(f'--genomeSAindexNbases {v}')
+
+    def get_genome_length(self) -> int:
+        length = 0
+        with open(self.ref_fa) as fh:
+            for line in fh:
+                if line.startswith('>'):
+                    continue
+                length += len(line.strip())
+        return length
+
+    def add_log_lines(self):
+        log = f'{self.outdir}/STAR-genomeGenerate.log'
+        self.lines += [
+            f'1> {log}',
+            f'2> {log}'
+        ]
+
+    def execute(self):
+        cmd = self.CMD_LINEBREAK.join(self.lines)
+        self.call(cmd)

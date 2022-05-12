@@ -7,7 +7,7 @@ RUN conda create -n rna-seq \
     cutadapt=4.0 \
     samtools=1.11 \
     bowtie2=2.3.5 \
-    star=2.7.10 \
+    star=2.7.9 \
     fastqc=0.11.9 \
  && conda install -c anaconda -n somatic \
     pandas=1.3.5 \

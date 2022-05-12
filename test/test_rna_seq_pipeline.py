@@ -20,7 +20,7 @@ class TestRNASeqPipeline(TestCase):
             base_quality_cutoff=20,
             min_read_length=20,
             max_read_length=None,
-            read_aligner='bowtie2',
+            read_aligner='star',
             bowtie2_mode='sensitive',
             discard_bam=False,
             min_count_mapq=10,
