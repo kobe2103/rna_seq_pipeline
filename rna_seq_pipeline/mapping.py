@@ -119,6 +119,7 @@ class Bowtie2(Processor):
 -U {self.fq1} \\
 -S {self.sam} \\
 --{self.mode} \\
+--no-unal \\
 --threads {self.threads} \\
 1> {log} \\
 2> {log}'''
@@ -133,6 +134,7 @@ class Bowtie2(Processor):
 -2 {self.fq2} \\
 -S {self.sam} \\
 --{self.mode} \\
+--no-unal \\
 --threads {self.threads} \\
 1> {log} \\
 2> {log}'''
