@@ -1,5 +1,6 @@
 import os
 from .template import Settings
+from .tools import get_temp_path
 from .rna_seq_pipeline import RNASeqPipeline
 
 
@@ -25,7 +26,7 @@ class Main:
             threads: int,
             debug: bool):
 
-        workdir = 'rna_seq_pipeline_workdir'
+        workdir = get_temp_path('rna_seq_pipeline_workdir_')
 
         settings = Settings(
             workdir=workdir,
